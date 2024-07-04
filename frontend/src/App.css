@@ -1,0 +1,4 @@
+.mainPageWrapper {
+  display: flex;
+  flex-direction: row;
+}
