@@ -15,8 +15,9 @@ import LoginTrel from "./Auth/Login";
 import Signup from "./Auth/Singup";
 import AuthLayout from "./Components/authLayout";
 import CalendarLayout from "./Components/CalendarLayout";
+import { Task } from "moduleTypes";
 
-export const tasksAtom:any = atom([]);
+export const tasksAtom = atom([]);
 
 type MounthState = {
   mounth: React.ComponentState;
@@ -52,14 +53,11 @@ export default function App() {
   const isAuth =()=> {
     if (localStorage.getItem("token")) {
     return apiAxoisInstance
-      .get("/users/auth/token/", {})
-      .then((response) => {
-        if(response){
+      .get("/users/auth/token/", {}).then((response) => {
+        if (response.data) {
           setIsLoggedIn(true);
           setUserInfo(response.data);
         }
-    
-        //apiAxoisInstance.get("/presences", {})
       })
       .catch(() => {
         setIsLoggedIn(false);

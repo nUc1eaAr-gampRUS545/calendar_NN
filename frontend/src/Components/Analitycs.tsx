@@ -26,15 +26,7 @@ import {
 import { tasksAtom } from "../App"; // Atom for storing tasks
 import { COLORS, taskColors } from "../utils/style";
 import { daysOfWeek } from "../utils/constants";
-
-interface Task {
-  title: string;
-  start: string;
-  end: string;
-  taskId: string;
-  employee: string; // New field for employee name
-  day?: string;
-}
+import { Task } from "moduleTypes";
 
 interface ProcessedTask {
   day: string;
@@ -66,7 +58,7 @@ const Analitycs = () => {
     }
 
     const data = tasks.map((task) => {
-      const startDate = new Date(task.start);
+      const startDate = new Date(task.created_at);
       const day = daysOfWeek[startDate.getDay()]; // Get day in Russian
       return { ...task, day };
     });
@@ -108,8 +100,8 @@ const Analitycs = () => {
     let restHours = 0;
 
     tasks.forEach((task) => {
-      const start = new Date(task.start);
-      const end = new Date(task.end);
+      const start = new Date(task.created_at);
+      const end = new Date(task.due_date);
       const duration = (end.getTime() - start.getTime()) / (1000 * 60 * 60); // in hours
 
       if (task.title.toLowerCase() === "chill") {
@@ -126,7 +118,7 @@ const Analitycs = () => {
     const hourlyActivity: { [key: string]: number } = {};
 
     tasks.forEach((task) => {
-      const start = new Date(task.start);
+      const start = new Date(task.created_at);
       const hour = start.getHours();
       hourlyActivity[hour] = (hourlyActivity[hour] || 0) + 1;
     });
@@ -141,14 +133,14 @@ const Analitycs = () => {
     const employeeWorkHours: { [key: string]: number } = {};
 
     tasks.forEach((task) => {
-      const start = new Date(task.start);
-      const end = new Date(task.end);
+      const start = new Date(task.created_at);
+      const end = new Date(task.due_date);
       const duration = (end.getTime() - start.getTime()) / (1000 * 60 * 60); // in hours
 
-      if (task.title.toLowerCase() !== "chill") {
+      /*if (task.title.toLowerCase() !== "chill") {
         employeeWorkHours[task.employee] =
           (employeeWorkHours[task.employee] || 0) + duration;
-      }
+      }*/
     });
 
     return Object.entries(employeeWorkHours).map(([employee, hours]) => ({
@@ -167,7 +159,7 @@ const Analitycs = () => {
       .split(" - ")
       .map((date) => new Date(date));
     return tasks.filter((task) => {
-      const taskDate = new Date(task.start);
+      const taskDate = new Date(task.created_at);
       return taskDate >= startDate && taskDate <= endDate;
     });
   };
@@ -177,11 +169,11 @@ const Analitycs = () => {
     if (!tasks || tasks.length === 0) return [];
 
     const sortedTasks = tasks.sort(
-      (a, b) => new Date(a.start).getTime() - new Date(b.start).getTime()
+      (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
     );
     const weekOptions: string[] = [];
 
-    let currentWeekStart = new Date(sortedTasks[0].start);
+    let currentWeekStart = new Date(sortedTasks[0].created_at);
     let currentWeekEnd = new Date(currentWeekStart);
     currentWeekEnd.setDate(currentWeekEnd.getDate() + 6);
 
@@ -192,7 +184,7 @@ const Analitycs = () => {
     );
 
     sortedTasks.forEach((task) => {
-      const taskDate = new Date(task.start);
+      const taskDate = new Date(task.created_at);
       if (taskDate > currentWeekEnd) {
         currentWeekStart = new Date(taskDate);
         currentWeekEnd = new Date(currentWeekStart);

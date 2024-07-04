@@ -48,15 +48,15 @@ class TokenVerifyView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        # request.user содержит объект пользователя, ассоциированный с текущим токеном
         user = request.user
-        user_data = {
+        user_data = {"data":{
             'id': user.id,
             'name': user.name,
             'email': user.email,
             'surname':user.surname,
-            # Другие поля пользователя, если они нужны
-        }
+            'role': user.role,
+            'work_mode': user.work_mode,
+        }}
 
         return Response(user_data, status=status.HTTP_200_OK)
 

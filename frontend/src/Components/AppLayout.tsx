@@ -11,28 +11,26 @@ import authUtils from "../api/authUtils";
 
 const AppLayout = () => {
   const [, setUserData] = useAtom(userAtom);
-
-  const [user, setUser] = useAtom(userAtom);
   const navigate = useNavigate();
   useEffect(() => {
     const checkAuth = async () => {
       const user = await authUtils.isAuthenticated();
-      console.log(user);
       if (!user) {
         console.log("no aser for app");
-       // navigate("/login");
+        navigate("/login");
       } else {
         // save user
         setUserData({
           id: user.id,
-          name: user.username,
+          name: user.name,
+          surname: user.surname,
           role: user.role,
+          work_mode: user.work_mode,
         });
-        console.log("vse good", user);
-        //navigate('/')
+        //navigate("/");
       }
     };
-    checkAuth();
+    //checkAuth();
   }, [navigate]);
 
   return (

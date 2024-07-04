@@ -1,11 +1,12 @@
 declare module "moduleTypes" {
-  interface Task {
+  type Task = {
+    id: number;
     title: string;
-    start: string;
-    end: string;
-    taskId: string;
-    employee: string; // New field for employee name
-    day?: string;
+    description?:string;
+    created_at: Date;
+    due_date: Date;
+    updated_at?:Date;
+    is_completed?:Date;
   }
   type LoginTrelProps = {
     isLoggedIn: boolean;
@@ -44,10 +45,7 @@ declare module "moduleTypes" {
     hours: number;
     minutes: number;
   }
-  interface TimeTasc {
-    hours: number;
-    minutes: number;
-  }
+
   interface PropsCalendar {
     handleInputForm: React.Dispatch<React.SetStateAction<TimeTasc>>;
   }
@@ -55,9 +53,5 @@ declare module "moduleTypes" {
     label: string;
     handleInputForm: React.Dispatch<React.SetStateAction<string>>;
   }
-  interface Tasc {
-    taskContent: string;
-    date: DateTasc;
-    taskImportance: string;
-  }
+ 
 }

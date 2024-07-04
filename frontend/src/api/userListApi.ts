@@ -2,7 +2,7 @@ import apiAxoisInstance from './apiSetup'
 
 const getuser = {
   
-  getuserlist: () => apiAxoisInstance.get(`/users`),
+  getuserlist: () => apiAxoisInstance.get(`/users/`),
 
 }
 

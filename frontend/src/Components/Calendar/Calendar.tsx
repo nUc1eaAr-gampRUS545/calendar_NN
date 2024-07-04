@@ -20,15 +20,16 @@ import {
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { Formik, Form } from "formik";
-import { PrimitiveAtom, useAtom } from "jotai";
+import { useAtom } from "jotai";
 import { useParams } from "react-router-dom";
 import { tasksAtom, userAtom } from "../../App";
 import userListApi from "../../api/userListApi";
 import taskApi from "../../api/taskApi";
 import { AxiosResponse } from "axios";
-import { locales } from "../../utils/constants";
+import { locales, resources } from "../../utils/constants";
 import { style } from "../../utils/style";
 import authApi from "../../api/authApi";
+import { Task } from "moduleTypes";
 
 const localizer = dateFnsLocalizer({
   format,
@@ -38,47 +39,19 @@ const localizer = dateFnsLocalizer({
   locales,
 });
 
-interface Task {
-  id: string;
-  title: string;
-  start: Date;
-  end: Date;
-}
-
-interface VerifyTokenResponse {
-  employee: any; // Replace `any` with the actual type if known
-}
-
-
-
-interface VerifyTokenResponse {
-  employee: any; // Replace `any` with the actual type if known
-}
-
-
-const verifyToken = async (): Promise<any> => {
-  try {
-    const res: AxiosResponse<VerifyTokenResponse> = await authApi.verifyToken();
-    console.log(res);
-    return res.data.employee;
-  } catch {
-    return false;
-  }
-};
-
 const BigCalendar: React.FC = () => {
-  const [tasks, setTasks] = useAtom<Task[]>(tasksAtom);
+  const [tasks, setTasks] = useAtom(tasksAtom);
   const { employeeId } = useParams<{ employeeId: string }>();
   const [user] = useAtom(userAtom);
-  const [userlist, setUserList] = useState([]);
+  const [userlist, setUserList] = useState<{ id: number; email: string }[]>([]);
   const [selectUser, setSelectUser] = useState<number>(user.id);
   const [data, setData] = useState<AxiosResponse<any, any>>();
   const [openDraw, setOpenDraw] = useState(false);
-  const [buttonLabel, setButtonLabel] = useState("Create");
+  const [buttonLabel, setButtonLabel] = useState<string>("Create");
   const [startTask, setStart] = useState<Date | null | undefined>(null);
   const [endTask, setEnd] = useState<Date | null | undefined>(null);
   const [titleTask, setTitleTask] = useState<string>("");
-  const [taskId, setIdTask] = useState<string>("");
+  const [taskId, setIdTask] = useState<number>();
   const [open, setOpen] = useState(false);
 
   const openDrawer = () => setOpenDraw(true);
@@ -87,16 +60,16 @@ const BigCalendar: React.FC = () => {
 
   useEffect(() => {
     const getTasks = async () => {
+      const res = await taskApi.gettask();
       try {
-        const res = await taskApi.gettask(selectUser);
         setData(res);
-        setTasks(res.data); // Update the global state with fetched tasks
+        setTasks(res as any); // Update the global state with fetched tasks
       } catch (err) {
         alert(err);
       }
     };
     getTasks();
-  }, [selectUser, openDraw]);
+  }, [selectUser, openDraw, setTasks]);
 
   useEffect(() => {
     const getUserList = async () => {
@@ -119,9 +92,9 @@ const BigCalendar: React.FC = () => {
       try {
         await taskApi.create({
           employeeId,
-          titleTask,
-          startTask,
-          endTask,
+          title: titleTask,
+          created_at: startTask,
+          due_date: endTask,
         });
       } catch (err) {
         alert(err);
@@ -130,8 +103,8 @@ const BigCalendar: React.FC = () => {
       try {
         await taskApi.update(taskId, {
           title: titleTask,
-          start: startTask,
-          end: endTask,
+          created_at: startTask,
+          due_date: endTask,
         });
       } catch (err) {
         alert(err);
@@ -142,22 +115,42 @@ const BigCalendar: React.FC = () => {
 
   const deleteTask = async () => {
     try {
-      await taskApi.delete(selectUser, taskId);
-      setTasks(tasks.filter((task) => task.id !== taskId)); // Remove the task from the local state
+      if (taskId) {
+        await taskApi.delete(selectUser, taskId);
+        setTasks((prevTasks: any) =>
+          prevTasks.filter((task: Task) => task.id !== taskId)
+        ); // Remove the task from the local state
+      }
       closeDrawer();
     } catch (err) {
       alert(err);
     }
   };
 
-  const HandleData = ({ start, end }: { start: Date | null | undefined; end: Date | null | undefined }) => {
+  const HandleData = ({
+    start,
+    end,
+  }: {
+    start: Date | null | undefined;
+    end: Date | null | undefined;
+  }) => {
     setEnd(end);
     setStart(start);
     openDrawer();
     setButtonLabel("Create");
   };
 
-  const HandleDatas = ({ start, end, id, title }: Task) => {
+  const HandleDatas = ({
+    start,
+    end,
+    id,
+    title,
+  }: {
+    start: Date | null | undefined;
+    end: Date | null | undefined;
+    id: number;
+    title: string;
+  }) => {
     setEnd(end);
     setStart(start);
     setIdTask(id);
@@ -166,34 +159,45 @@ const BigCalendar: React.FC = () => {
     setButtonLabel("Update");
   };
 
-  const updateTitleTask = (event: React.ChangeEvent<{ value: unknown }>) => {
-    setTitleTask(event.target.value as string);
+  const updateTitleTask = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setTitleTask(event.target.value);
   };
 
-  const UpdateStartTime = (start: Date) => {
+  const UpdateStartTime = (start: Date | null) => {
     setStart(start);
   };
 
-  const taskEvents = data?.data.map((taskevent: Task) => ({
-    start: new Date(taskevent.start),
-    end: new Date(taskevent.end),
-    title: taskevent.title,
-    resource: taskevent.id,
-    id: taskevent.id,
+  const taskEvents = tasks.map((task: Task) => ({
+    title: task.title,
+    id: task.id,
+    resource: task.id,
+    start: new Date(task.created_at),
+    end: new Date(task.due_date),
   }));
 
   return (
     <Box sx={{ height: "96vh", margin: "2vh" }}>
       <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-        <Select labelId="select-user-label" id="select-user" value={selectUser} onChange={()=>updateSelectUser} label="Select User">
-          {userlist.map((option: { id: number; email: string }) => (
+        <Select
+          labelId="select-user-label"
+          id="select-user"
+          value={selectUser}
+          onChange={()=>updateSelectUser}
+          label="Select User"
+        >
+          {userlist.map((option) => (
             <MenuItem key={option.id} value={option.id}>
               {option.email}
             </MenuItem>
           ))}
         </Select>
       </FormControl>
-      <Modal open={open} onClose={handleClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
         <Box sx={style}>
           <Typography id="modal-modal-title" variant="h6" component="h2">
             Text in a modal
@@ -208,7 +212,9 @@ const BigCalendar: React.FC = () => {
           events={taskEvents}
           localizer={localizer}
           onSelectSlot={({ start, end }) => HandleData({ start, end })}
-          onDoubleClickEvent={({ start, end, id, title }: Task) => HandleDatas({ start, end, id, title })}
+          onDoubleClickEvent={({ start, end, id, title }) => {
+            HandleDatas({ start, end, id, title });
+          }}
           startAccessor="start"
           endAccessor="end"
           style={{ fontFamily: "roboto" }}
@@ -217,13 +223,13 @@ const BigCalendar: React.FC = () => {
         <Drawer anchor={"right"} open={openDraw} onClose={closeDrawer}>
           <Box sx={{ width: "30vw", padding: "2vw", height: "100%" }}>
             <Formik initialValues={{}} onSubmit={() => {}}>
-              {({}) => (
+              {() => (
                 <Form>
                   <List>
                     <ListItem>
                       <DatePicker
                         selected={startTask}
-                        onChange={() => UpdateStartTime}
+                        onChange={(date) => UpdateStartTime(date)}
                         showTimeSelect
                         dateFormat="MMMM d, yyyy h:mm aa"
                       />
@@ -231,19 +237,31 @@ const BigCalendar: React.FC = () => {
                     <ListItem>
                       <DatePicker
                         selected={endTask}
-                        onChange={() => setEnd}
+                        onChange={(date) => setEnd(date)}
                         showTimeSelect
                         dateFormat="MMMM d, yyyy h:mm aa"
                       />
                     </ListItem>
                     <ListItem>
-                      <input value={titleTask} onChange={updateTitleTask} placeholder="Enter title" />
+                      <input
+                        value={titleTask}
+                        onChange={updateTitleTask}
+                        placeholder="Enter title"
+                      />
                     </ListItem>
                     <ListItem sx={{ mt: "5vw", mr: "5vw" }}>
-                      <Button variant="outlined" color="error" onClick={deleteTask}>
+                      <Button
+                        variant="outlined"
+                        color="error"
+                        onClick={deleteTask}
+                      >
                         Delete
                       </Button>
-                      <Button variant="contained" color="primary" onClick={() => createTask(selectUser)}>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => createTask(selectUser)}
+                      >
                         {buttonLabel}
                       </Button>
                     </ListItem>
