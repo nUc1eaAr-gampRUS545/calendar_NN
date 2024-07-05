@@ -20,7 +20,7 @@ import {
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { Formik, Form } from "formik";
-import { useAtom } from "jotai";
+import { SetStateAction, useAtom } from "jotai";
 import { useParams } from "react-router-dom";
 import { tasksAtom, userAtom } from "../../App";
 import userListApi from "../../api/userListApi";
@@ -29,7 +29,8 @@ import { AxiosResponse } from "axios";
 import { locales, resources } from "../../utils/constants";
 import { style } from "../../utils/style";
 import authApi from "../../api/authApi";
-import { Task } from "moduleTypes";
+import { Task, User} from "moduleTypes";
+
 
 const localizer = dateFnsLocalizer({
   format,
@@ -43,7 +44,7 @@ const BigCalendar: React.FC = () => {
   const [tasks, setTasks] = useAtom(tasksAtom);
   const { employeeId } = useParams<{ employeeId: string }>();
   const [user] = useAtom(userAtom);
-  const [userlist, setUserList] = useState<{ id: number; email: string }[]>([]);
+  const [userlist, setUserList] = useState<User[]>([]);
   const [selectUser, setSelectUser] = useState<number>(user.id);
   const [data, setData] = useState<AxiosResponse<any, any>>();
   const [openDraw, setOpenDraw] = useState(false);
@@ -57,6 +58,20 @@ const BigCalendar: React.FC = () => {
   const openDrawer = () => setOpenDraw(true);
   const closeDrawer = () => setOpenDraw(false);
   const handleClose = () => setOpen(false);
+
+  const getUserList = async () => {
+    const res = await userListApi.getuserlist();
+    try {
+    
+      setUserList(res as any);
+    } catch (err) {
+      alert(err);
+    }
+  };
+
+  // useEffect(()=>{
+  //   getUserList();
+  // },[])
 
   useEffect(() => {
     const getTasks = async () => {
@@ -72,14 +87,7 @@ const BigCalendar: React.FC = () => {
   }, [selectUser, openDraw, setTasks]);
 
   useEffect(() => {
-    const getUserList = async () => {
-      try {
-        const res = await userListApi.getuserlist();
-        setUserList(res.data);
-      } catch (err) {
-        alert(err);
-      }
-    };
+   
     getUserList();
   }, [employeeId, openDraw]);
 
@@ -186,8 +194,8 @@ const BigCalendar: React.FC = () => {
           label="Select User"
         >
           {userlist.map((option) => (
-            <MenuItem key={option.id} value={option.id}>
-              {option.email}
+            <MenuItem key={option.email} value={option.name}>
+              {option.surname}
             </MenuItem>
           ))}
         </Select>

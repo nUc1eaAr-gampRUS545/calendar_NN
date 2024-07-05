@@ -1,9 +1,9 @@
-import apiAxoisInstance from './apiSetup'
+import { User } from 'moduleTypes';
+import apiAxiosInstance from './apiSetup';
 
 const getuser = {
-  
-  getuserlist: () => apiAxoisInstance.get(`/users/`),
+  getuserlist: () => apiAxiosInstance.get(`/users/`)
+    
+};
 
-}
-
-export default getuser
+export default getuser;

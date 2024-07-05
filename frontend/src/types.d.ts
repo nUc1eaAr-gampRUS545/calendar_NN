@@ -2,16 +2,22 @@ declare module "moduleTypes" {
   type Task = {
     id: number;
     title: string;
-    description?:string;
+    description?: string;
     created_at: Date;
     due_date: Date;
-    updated_at?:Date;
-    is_completed?:Date;
+    updated_at?: Date;
+    is_completed?: Date;
+  };
+  interface User {
+    name: string;
+    surname: string;
+    email: string;
+    is_active: boolean;
   }
   type LoginTrelProps = {
     isLoggedIn: boolean;
     setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
-  }
+  };
   type Person = {
     id: number;
     firstName: string;
@@ -53,5 +59,4 @@ declare module "moduleTypes" {
     label: string;
     handleInputForm: React.Dispatch<React.SetStateAction<string>>;
   }
- 
 }
