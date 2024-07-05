@@ -5,6 +5,8 @@ from django.db import models
 from django.core import validators
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin, Group, Permission
 
+from Organization.models import Organization
+
 class UserManager(BaseUserManager):
 
     def _create_user(self, name, surname, email, role, work_mode, password=None, **extra_fields):
@@ -45,6 +47,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     id = models.AutoField(primary_key=True)
     name = models.CharField(blank=False, max_length=255)
     surname = models.CharField(max_length=30, blank=False)
+    tell = models.CharField(max_length=11,validators=[validators.validate_integer],
+        unique=True,
+        blank=False)
+    organization = models.ManyToManyField(Organization, related_name='organizations')
     role = models.CharField(blank=False, max_length=255, default='user')
     work_mode = models.CharField(blank=False, max_length=255)
     email = models.EmailField(

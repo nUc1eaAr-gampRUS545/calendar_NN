@@ -9,7 +9,6 @@ export default function ExitButton() {
 
   function logout() {
     setIsLoggedIn(false);
-    localStorage.removeItem("token");
     localStorage.clear();
     navigate(`/login`);
   }

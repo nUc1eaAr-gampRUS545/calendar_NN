@@ -29,8 +29,8 @@ import { AxiosResponse } from "axios";
 import { locales, resources } from "../../utils/constants";
 import { style } from "../../utils/style";
 import authApi from "../../api/authApi";
-import { Task, User} from "moduleTypes";
-
+import { Task, User } from "moduleTypes";
+import { CRUDTask } from "../Popup/CRUDTask";
 
 const localizer = dateFnsLocalizer({
   format,
@@ -52,6 +52,7 @@ const BigCalendar: React.FC = () => {
   const [startTask, setStart] = useState<Date | null | undefined>(null);
   const [endTask, setEnd] = useState<Date | null | undefined>(null);
   const [titleTask, setTitleTask] = useState<string>("");
+  const [descriptionTask, setDescriptionTask] = useState<string>("");
   const [taskId, setIdTask] = useState<number>();
   const [open, setOpen] = useState(false);
 
@@ -62,7 +63,6 @@ const BigCalendar: React.FC = () => {
   const getUserList = async () => {
     const res = await userListApi.getuserlist();
     try {
-    
       setUserList(res as any);
     } catch (err) {
       alert(err);
@@ -87,7 +87,6 @@ const BigCalendar: React.FC = () => {
   }, [selectUser, openDraw, setTasks]);
 
   useEffect(() => {
-   
     getUserList();
   }, [employeeId, openDraw]);
 
@@ -167,16 +166,13 @@ const BigCalendar: React.FC = () => {
     setButtonLabel("Update");
   };
 
-  const updateTitleTask = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setTitleTask(event.target.value);
-  };
-
-  const UpdateStartTime = (start: Date | null) => {
+  const updateStartTime = (start: Date | null) => {
     setStart(start);
   };
 
   const taskEvents = tasks.map((task: Task) => ({
     title: task.title,
+    description:task.description,
     id: task.id,
     resource: task.id,
     start: new Date(task.created_at),
@@ -190,7 +186,7 @@ const BigCalendar: React.FC = () => {
           labelId="select-user-label"
           id="select-user"
           value={selectUser}
-          onChange={()=>updateSelectUser}
+          onChange={() => updateSelectUser}
           label="Select User"
         >
           {userlist.map((option) => (
@@ -228,57 +224,26 @@ const BigCalendar: React.FC = () => {
           style={{ fontFamily: "roboto" }}
           selectable
         />
-        <Drawer anchor={"right"} open={openDraw} onClose={closeDrawer}>
-          <Box sx={{ width: "30vw", padding: "2vw", height: "100%" }}>
-            <Formik initialValues={{}} onSubmit={() => {}}>
-              {() => (
-                <Form>
-                  <List>
-                    <ListItem>
-                      <DatePicker
-                        selected={startTask}
-                        onChange={(date) => UpdateStartTime(date)}
-                        showTimeSelect
-                        dateFormat="MMMM d, yyyy h:mm aa"
-                      />
-                    </ListItem>
-                    <ListItem>
-                      <DatePicker
-                        selected={endTask}
-                        onChange={(date) => setEnd(date)}
-                        showTimeSelect
-                        dateFormat="MMMM d, yyyy h:mm aa"
-                      />
-                    </ListItem>
-                    <ListItem>
-                      <input
-                        value={titleTask}
-                        onChange={updateTitleTask}
-                        placeholder="Enter title"
-                      />
-                    </ListItem>
-                    <ListItem sx={{ mt: "5vw", mr: "5vw" }}>
-                      <Button
-                        variant="outlined"
-                        color="error"
-                        onClick={deleteTask}
-                      >
-                        Delete
-                      </Button>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={() => createTask(selectUser)}
-                      >
-                        {buttonLabel}
-                      </Button>
-                    </ListItem>
-                  </List>
-                </Form>
-              )}
-            </Formik>
-          </Box>
-        </Drawer>
+        <CRUDTask
+          openDraw={openDraw}
+          closeDrawer={closeDrawer}
+          startTask={startTask}
+          endTask={endTask}
+          updateStartTime={updateStartTime}
+          titleTask={titleTask}
+          descriptionTask={descriptionTask}
+          setDescriptionTask={(event: React.ChangeEvent<HTMLInputElement>) => {
+            setDescriptionTask(event.target.value);
+          }}
+          updateTitleTask={(event: React.ChangeEvent<HTMLInputElement>) => {
+            setTitleTask(event.target.value);
+          }}
+          createTask={createTask}
+          selectUser={selectUser}
+          buttonLabel={buttonLabel}
+          setEnd={setEnd}
+          deleteTask={deleteTask}
+        />
       </Box>
     </Box>
   );

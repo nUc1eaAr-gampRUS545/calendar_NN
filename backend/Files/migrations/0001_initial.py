@@ -8,13 +8,11 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-        ("Files", "0001_initial"),
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name="Task",
+            name="File",
             fields=[
                 (
                     "id",
@@ -25,18 +23,11 @@ class Migration(migrations.Migration):
                         verbose_name="ID",
                     ),
                 ),
-                ("title", models.CharField(default="", max_length=255)),
-                ("description", models.TextField(blank=True, default="")),
+                ("title", models.CharField(max_length=255)),
+                ("file", models.FileField(upload_to="uploads/")),
+                ("description", models.TextField(blank=True)),
                 ("created_at", models.DateTimeField(default=django.utils.timezone.now)),
                 ("updated_at", models.DateTimeField(auto_now=True)),
-                ("due_date", models.DateTimeField(blank=True, null=True)),
-                ("is_completed", models.BooleanField(default=False)),
-                ("venue", models.CharField(max_length=255)),
-                ("importance", models.CharField(max_length=255)),
-                (
-                    "files",
-                    models.ManyToManyField(related_name="files", to="Files.file"),
-                ),
             ],
         ),
     ]

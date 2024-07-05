@@ -18,45 +18,23 @@ declare module "moduleTypes" {
     isLoggedIn: boolean;
     setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
   };
-  type Person = {
-    id: number;
-    firstName: string;
-    lastName: string;
-    surname: string;
-    jobTitle: string;
-    offDays: number;
-    group: string;
-  };
-  interface MounthData {
-    name: string;
-    dayNumber: number;
-    mounthNumber: number;
-  }
-  interface DayElementProps {
-    mounth: string;
-    dayNumber: number;
-    mounthNumber: number;
-    peopleInvolved: Person[];
-  }
-  interface PopupForTascs {
-    onClose: () => void;
-    isOpen: boolean;
-    dayNumber: number;
-    mounthNumber: number;
-  }
-  interface DateTasc {
-    day: number;
-    mounth: number;
-    year: number;
-    hours: number;
-    minutes: number;
-  }
-
-  interface PropsCalendar {
-    handleInputForm: React.Dispatch<React.SetStateAction<TimeTasc>>;
-  }
-  interface InputTascForm {
-    label: string;
-    handleInputForm: React.Dispatch<React.SetStateAction<string>>;
-  }
+ 
+  interface CRUDTaskProps {
+    deleteTask: MouseEventHandler<HTMLButtonElement> | undefined;
+    setEnd(date: Date | null): void;
+    openDraw:boolean;
+    closeDrawer:()=>void;
+    startTask:Date | null | undefined;
+    endTask:Date | null | undefined;
+    updateStartTime:(start: Date | null) => void;
+    titleTask:string;
+    descriptionTask:string;
+    setDescriptionTask: ChangeEventHandler<HTMLTextAreaElement> | undefined;
+    updateTitleTask: ChangeEventHandler<HTMLTextAreaElement> | undefined;
+    createTask:(employeeId: number) => Promise<void>;
+    selectUser:number;
+    buttonLabel:string;
 }
+}
+
+

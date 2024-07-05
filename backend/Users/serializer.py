@@ -3,12 +3,14 @@ from urllib import request
 from rest_framework import serializers
 from django.contrib.auth import authenticate
 
+from Organization.models import Organization
 from .models import User
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['email', 'name', 'surname', 'is_active']
+
 
 class RegistrationSerializer(serializers.ModelSerializer):
    
@@ -21,13 +23,18 @@ class RegistrationSerializer(serializers.ModelSerializer):
     # The client should not be able to send a token along with a registration
     # request. Making `token` read-only handles that for us.
     token = serializers.CharField(max_length=255, read_only=True)
+    organization = serializers.PrimaryKeyRelatedField(
+        many=True, queryset=Organization.objects.all(), write_only=True)
 
     class Meta:
         model = User
-        fields = ('email', 'name','surname','role','work_mode', 'password', 'token',)
+        fields = ('email', 'name', 'surname', 'role', 'work_mode', 'tell', 'organization', 'password', 'token',)
 
     def create(self, validated_data):
-        return User.objects.create_user(**validated_data)
+        organization = validated_data.pop('organization', [])
+        user = User.objects.create_user(**validated_data)
+        user.organization.set(organization)
+        return user
 
 class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField(write_only=True)

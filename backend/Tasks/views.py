@@ -1,20 +1,27 @@
 from rest_framework import generics, permissions
 from .models import Task
 from .serializer import TaskSerializer
+from rest_framework import generics, permissions
+from .models import Task
+from .serializer import TaskSerializer
 
 class TaskListCreateView(generics.ListCreateAPIView):
     serializer_class = TaskSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        return Task.objects.filter(user=self.request.user)
+        # Фильтруем задачи, связанные с текущим пользователем
+        return Task.objects.filter(users=self.request.user)
 
     def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+        # Сохраняем задачу и добавляем текущего пользователя в ManyToManyField
+        serializer.save()
+        serializer.instance.users.add(self.request.user)
 
 class TaskDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = TaskSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        return Task.objects.filter(user=self.request.user)
+        # Фильтруем задачи, связанные с текущим пользователем
+        return Task.objects.filter(users=self.request.user)

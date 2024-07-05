@@ -66,7 +66,6 @@ const SideBar = () => {
         height: 56,
         bgcolor: stringToColor(name),
       },
-      /* children: `${name.split(' ')[0][0]}${name.split(' ')[1][0]}`, */
     };
   }
 
@@ -113,7 +112,7 @@ const SideBar = () => {
             <ListItemIcon>
               <BarChartIcon />
             </ListItemIcon>
-            <ListItemText primary="Analitycs" />
+            <ListItemText primary="Organizations" />
           </ListItemButton>
         </List>
         <Box sx={{ width: "40%", ml: "auto", mr: "auto" }}>

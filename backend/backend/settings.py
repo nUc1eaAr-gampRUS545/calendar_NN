@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'authentication',
     'Users.apps.UsersConfig',
     'Tasks.apps.TasksConfig',
+    'Files.apps.FilesConfig',
     'Organization.apps.OrganizationConfig'
 ]
 
