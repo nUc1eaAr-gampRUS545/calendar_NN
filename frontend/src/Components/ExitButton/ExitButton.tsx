@@ -1,5 +1,5 @@
 import { useAtom } from "jotai";
-import { logInAtom } from "../App";
+import { logInAtom } from "../../App";
 import Button from "@mui/material/Button";
 import { useNavigate } from "react-router-dom";
 

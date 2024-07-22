@@ -1,15 +1,15 @@
 import { useAtom } from "jotai";
-import { userAtom } from "../App";
+import { logInAtom, userAtom } from "../App";
 import { Box, Avatar, Grid, Paper, Typography } from "@mui/material";
+import { useEffect } from "react";
+import authApi from "../api/authApi";
 
 const UserPage = () => {
-  const [user] = useAtom(userAtom);
+  const [user, setUser] = useAtom(userAtom);
 
   function stringToColor(string: string) {
     let hash = 0;
     let i;
-
-    /* eslint-disable no-bitwise */
     for (i = 0; i < string.length; i += 1) {
       hash = string.charCodeAt(i) + ((hash << 5) - hash);
     }
@@ -31,35 +31,44 @@ const UserPage = () => {
         width: "30vh",
         height: "30vh",
         bgcolor: stringToColor(name),
+        fontSize: "10vh",
       },
+      children: `${name.split(" ")[0][0]}${name.split(" ")[1][0]}`,
     };
   }
+  // useEffect(() => {
+  //   authApi
+  //     .verifyToken()
+  //     .then((response) => setUser(response.data));
+  // }, [logInAtom]);
 
   return (
     <Box sx={{ padding: "7vh" }}>
       <Grid container spacing={8}>
-        <Grid item xs={5} md={2.5}>
+        <Grid item xs={12} md={4}>
           <Avatar {...stringAvatar(user.name + " " + user.surname)} />
         </Grid>
-        <Grid item xs={5} md={9.5}>
-          <Paper elevation={0}>
-            <Typography variant="h2" gutterBottom sx={{}}>
-              {user.name}
-              {"   "}
-              {user.surname}
+        <Grid item xs={12} md={8}>
+          <Paper elevation={0} sx={{ padding: "2vh" }}>
+            <Typography variant="h2" gutterBottom>
+              {user.name} {user.surname}
             </Typography>
-            <Typography variant="h4" gutterBottom sx={{}}>
-              role: {user.role}
+            <Typography variant="h4" gutterBottom>
+              Role: {user.role}
+            </Typography>
+            <Typography variant="h6" gutterBottom>
+              Email: {user.email}
+            </Typography>
+            <Typography variant="h6" gutterBottom>
+              Phone: {user.tell}
+            </Typography>
+            <Typography variant="h6" gutterBottom>
+              Work Mode: {user.work_mode}
             </Typography>
           </Paper>
-          <Paper elevation={0}></Paper>
-        </Grid>
-        <Grid item xs={7} md={2.5}></Grid>
-        <Grid item xs={7} md={4}>
-          <Paper elevation={1}></Paper>
         </Grid>
       </Grid>
-      <Box></Box>
+      <Box sx={{ marginTop: "5vh" }}></Box>
     </Box>
   );
 };

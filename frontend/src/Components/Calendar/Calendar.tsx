@@ -17,20 +17,17 @@ import {
   Button,
   Typography,
 } from "@mui/material";
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { Formik, Form } from "formik";
-import { SetStateAction, useAtom } from "jotai";
+import { useAtom } from "jotai";
 import { useParams } from "react-router-dom";
 import { tasksAtom, userAtom } from "../../App";
-import userListApi from "../../api/userListApi";
 import taskApi from "../../api/taskApi";
 import { AxiosResponse } from "axios";
-import { locales, resources } from "../../utils/constants";
+import { locales } from "../../utils/constants";
 import { style } from "../../utils/style";
-import authApi from "../../api/authApi";
-import { Task, User } from "moduleTypes";
+import { HandleDatasProps, Task, User } from "moduleTypes";
 import { CRUDTask } from "../Popup/CRUDTask";
+import apiForUsers from "../../api/userListApi";
 
 const localizer = dateFnsLocalizer({
   format,
@@ -45,93 +42,47 @@ const BigCalendar: React.FC = () => {
   const { employeeId } = useParams<{ employeeId: string }>();
   const [user] = useAtom(userAtom);
   const [userlist, setUserList] = useState<User[]>([]);
-  const [selectUser, setSelectUser] = useState<number>(user.id);
+  const [selectUserID, setSelectUserID] = useState<number>(user.id);
   const [data, setData] = useState<AxiosResponse<any, any>>();
   const [openDraw, setOpenDraw] = useState(false);
   const [buttonLabel, setButtonLabel] = useState<string>("Create");
   const [startTask, setStart] = useState<Date | null | undefined>(null);
   const [endTask, setEnd] = useState<Date | null | undefined>(null);
   const [titleTask, setTitleTask] = useState<string>("");
-  const [descriptionTask, setDescriptionTask] = useState<string>("");
   const [taskId, setIdTask] = useState<number>();
   const [open, setOpen] = useState(false);
+  const [placeExecutionTask, setPlaceExecutionTask] = useState<string>("");
+  const [descriptionTask, setDescriptionTask] = useState<string>("");
+  const [executors, setExecutors] = useState<number[]>([]);
+  const [workStatus, setWorkStatus] = useState<string>("");
+  const [filesDataBase, setFilesDataBase] = useState<number[]>();
 
   const openDrawer = () => setOpenDraw(true);
-  const closeDrawer = () => setOpenDraw(false);
+  const closeDrawer = () => {
+    setOpenDraw(false);
+    setEnd(null);
+    setDescriptionTask("");
+    setPlaceExecutionTask("");
+    setWorkStatus("");
+    setStart(null);
+    setIdTask(0);
+    setFilesDataBase([]);
+    setExecutors([]);
+    setTitleTask('');
+    setButtonLabel("");}
   const handleClose = () => setOpen(false);
 
   const getUserList = async () => {
-    const res = await userListApi.getuserlist();
+    const res = await apiForUsers.getUserlist();
     try {
-      setUserList(res as any);
+      setUserList(res.data as any);
     } catch (err) {
-      alert(err);
+      console.error(err);
     }
   };
 
-  // useEffect(()=>{
-  //   getUserList();
-  // },[])
-
-  useEffect(() => {
-    const getTasks = async () => {
-      const res = await taskApi.gettask();
-      try {
-        setData(res);
-        setTasks(res as any); // Update the global state with fetched tasks
-      } catch (err) {
-        alert(err);
-      }
-    };
-    getTasks();
-  }, [selectUser, openDraw, setTasks]);
-
-  useEffect(() => {
-    getUserList();
-  }, [employeeId, openDraw]);
-
-  const updateSelectUser = (e: React.ChangeEvent<{ value: unknown }>) => {
-    setSelectUser(e.target.value as number);
-  };
-
-  const createTask = async (employeeId: number) => {
-    if (!taskId) {
-      try {
-        await taskApi.create({
-          employeeId,
-          title: titleTask,
-          created_at: startTask,
-          due_date: endTask,
-        });
-      } catch (err) {
-        alert(err);
-      }
-    } else {
-      try {
-        await taskApi.update(taskId, {
-          title: titleTask,
-          created_at: startTask,
-          due_date: endTask,
-        });
-      } catch (err) {
-        alert(err);
-      }
-    }
-    closeDrawer();
-  };
-
-  const deleteTask = async () => {
-    try {
-      if (taskId) {
-        await taskApi.delete(selectUser, taskId);
-        setTasks((prevTasks: any) =>
-          prevTasks.filter((task: Task) => task.id !== taskId)
-        ); // Remove the task from the local state
-      }
-      closeDrawer();
-    } catch (err) {
-      alert(err);
-    }
+  const updateSelectUserID = (e: React.ChangeEvent<{ value: unknown }>) => {
+    setSelectUserID(e.target.value as number);
   };
 
   const HandleData = ({
@@ -152,32 +103,76 @@ const BigCalendar: React.FC = () => {
     end,
     id,
     title,
-  }: {
-    start: Date | null | undefined;
-    end: Date | null | undefined;
-    id: number;
-    title: string;
-  }) => {
+    description,
+    venue,
+    filesDataBase,
+    users,
+    importance,
+  }: HandleDatasProps) => {
     setEnd(end);
+    setDescriptionTask(description);
+    setPlaceExecutionTask(venue);
+    setWorkStatus(importance);
     setStart(start);
     setIdTask(id);
+    setFilesDataBase(filesDataBase);
+    setExecutors(users);
     setTitleTask(title);
     openDrawer();
     setButtonLabel("Update");
   };
 
+
+
   const updateStartTime = (start: Date | null) => {
     setStart(start);
   };
-
-  const taskEvents = tasks.map((task: Task) => ({
+  const updateTasks =(tasks:Task[])=>{
+  return tasks.map((task: Task) => ({
     title: task.title,
-    description:task.description,
+    description: task.description,
+    venue: task.venue,
+    filesDataBase: task.files,
+    users: task.users,
+    importance: task.importance,
     id: task.id,
     resource: task.id,
-    start: new Date(task.created_at),
+    start: new Date(task.start_date),
     end: new Date(task.due_date),
-  }));
+  }));}
+
+  useEffect(() => {
+    const getTasks = async () => {
+      const res = await taskApi.gettask();
+      try {
+        setData(res);
+        setTasks(res as any);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    getTasks();
+    
+  }, [selectUserID, openDraw, setTasks]);
+
+  useEffect(() => {
+    getUserList();
+  }, [employeeId, openDraw]);
+
+  const eventPropGetter = (event: any) => {
+    let backgroundColor = "";
+    switch (event.importance) {
+      case "Простые работы":
+        backgroundColor = "#aae0ff";
+        break;
+      case "Работы повышенной сложности":
+        backgroundColor = "orange";
+        break;
+      default:
+        backgroundColor = "blue";
+    }
+    return { style: { backgroundColor } };
+  };
 
   return (
     <Box sx={{ height: "96vh", margin: "2vh" }}>
@@ -185,12 +180,12 @@ const BigCalendar: React.FC = () => {
         <Select
           labelId="select-user-label"
           id="select-user"
-          value={selectUser}
-          onChange={() => updateSelectUser}
+          value={selectUserID}
+          onChange={()=>updateSelectUserID}
           label="Select User"
         >
           {userlist.map((option) => (
-            <MenuItem key={option.email} value={option.name}>
+            <MenuItem key={option.email} value={option.id}>
               {option.surname}
             </MenuItem>
           ))}
@@ -213,36 +208,62 @@ const BigCalendar: React.FC = () => {
       </Modal>
       <Box sx={{ height: "90%" }}>
         <Calendar
-          events={taskEvents}
+          events={updateTasks(tasks)}
           localizer={localizer}
           onSelectSlot={({ start, end }) => HandleData({ start, end })}
-          onDoubleClickEvent={({ start, end, id, title }) => {
-            HandleDatas({ start, end, id, title });
+         
+          onDoubleClickEvent={({
+            start,
+            end,
+            id,
+            title,
+            description,
+            venue,
+            filesDataBase,
+            users,
+            importance,
+          }) => {
+            HandleDatas({
+              start,
+              end,
+              id,
+              title,
+              description,
+              venue,
+              filesDataBase,
+              users,
+              importance,
+            });
           }}
           startAccessor="start"
           endAccessor="end"
-          style={{ fontFamily: "roboto" }}
+          style={{ fontFamily: "roboto",backgroundColor:"#eef8ff"}}
           selectable
+          eventPropGetter={eventPropGetter}
         />
         <CRUDTask
           openDraw={openDraw}
+          taskId={taskId}
           closeDrawer={closeDrawer}
           startTask={startTask}
           endTask={endTask}
-          updateStartTime={updateStartTime}
+          userlist={userlist}
           titleTask={titleTask}
-          descriptionTask={descriptionTask}
-          setDescriptionTask={(event: React.ChangeEvent<HTMLInputElement>) => {
-            setDescriptionTask(event.target.value);
-          }}
-          updateTitleTask={(event: React.ChangeEvent<HTMLInputElement>) => {
-            setTitleTask(event.target.value);
-          }}
-          createTask={createTask}
-          selectUser={selectUser}
+          updateStartTime={updateStartTime}
+          updateTitleTask={setTitleTask}
+          filesDataBase={filesDataBase}
+          selectUserID={selectUserID}
           buttonLabel={buttonLabel}
+          setStart={setStart}
           setEnd={setEnd}
-          deleteTask={deleteTask}
+          description={descriptionTask}
+          setDescription={setDescriptionTask}
+          setPlaceExecutionTask={setPlaceExecutionTask}
+          setWorkStatus={setWorkStatus}
+          setExecutors={setExecutors}
+          workStatus={workStatus}
+          executors={executors}
+          placeExecutionTask={placeExecutionTask}
         />
       </Box>
     </Box>

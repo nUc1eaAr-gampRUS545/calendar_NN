@@ -1,11 +1,12 @@
 import axios from "axios";
+import { serverURL } from "../utils/constants";
 
 // Get the token from localStorage
 const token = localStorage.getItem("token");
 const isVerifyToken = token !== null;
 
 var apiAxiosInstance = axios.create({
-  baseURL: "http://127.0.0.1:8000/api/v1/",
+  baseURL: serverURL + "/api/v1/",
   headers: {
     Accept: "application/json",
     Authorization: "Bearer " + token,
@@ -36,7 +37,7 @@ apiAxiosInstance.interceptors.response.use(
   },
   (err) => {
     if (!err.response) {
-      return alert(err);
+      return console.error(err);
     }
     throw err.response;
   }

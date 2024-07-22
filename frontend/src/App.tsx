@@ -11,11 +11,13 @@ import apiAxoisInstance from "./api/apiSetup";
 import AppLayout from "./Components/AppLayout";
 import UserPage from "./Components/UserPage";
 import Analitycs from "./Components/Analitycs";
-import LoginTrel from "./Auth/Login";
-import Signup from "./Auth/Singup";
 import AuthLayout from "./Components/authLayout";
 import CalendarLayout from "./Components/CalendarLayout";
-import { Task } from "moduleTypes";
+import LoginTrel from "./Components/Auth/Login";
+
+import { UserInterface } from "./utils/constants";
+import SignUp from "./Components/Auth/SignUp";
+import authApi from "./api/authApi";
 
 export const tasksAtom = atom([]);
 
@@ -26,16 +28,8 @@ type MounthState = {
 
 export const Mounth = createContext<MounthState | null>(null);
 export const YearAtom = atom<number>(new Date().getFullYear());
-export const userAtom = atom({
-  id: 0,
-  name: "",
-  surname: "",
-  role: "",
-  work_mode: "",
-});
-
+export const userAtom = atom(UserInterface);
 export const logInAtom = atom<boolean>(false);
-
 export const scheduleController = new AbortController();
 export const queryClient = new QueryClient({
   queryCache: new QueryCache({
@@ -52,11 +46,11 @@ export default function App() {
 
   const isAuth =()=> {
     if (localStorage.getItem("token")) {
-    return apiAxoisInstance
-      .get("/users/auth/token/", {}).then((response) => {
+    return authApi.verifyToken().then((response) => {
         if (response.data) {
           setIsLoggedIn(true);
           setUserInfo(response.data);
+          navigate("user_page");
         }
       })
       .catch(() => {
@@ -67,12 +61,10 @@ export default function App() {
 
   useEffect(() => {
       isAuth();
+      isLoggedIn ?  navigate("user_page") : navigate("login")
 
-  }, []);
-  useEffect(() => {
-    isLoggedIn ? navigate('/') : navigate("/login")
-    
-}, [isLoggedIn]);
+  }, [isLoggedIn]);
+
 
   return (
     <Routes>
@@ -89,7 +81,7 @@ export default function App() {
           </QueryClientProvider>
         }
       >
-        <Route path="userPage" element={<UserPage />} />
+        <Route path="user_page" element={<UserPage />} />
 
         <Route
           path=":employeeId/employeCalendar"
@@ -99,7 +91,7 @@ export default function App() {
       </Route>
       <Route path="/" element={<AuthLayout />}>
         <Route path="login"  element={<LoginTrel isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}/>} />
-        <Route path="signup" element={<Signup />} />
+        <Route path="signup" element={<SignUp />} />
       </Route>
     </Routes>
   );

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAtom } from "jotai";
 import { userAtom } from "../App";
-import ExitButton from "../ExitButton/ExitButton";
+import ExitButton from "./ExitButton/ExitButton";
 import {
   Box,
   Avatar,
@@ -19,11 +19,10 @@ import BarChartIcon from "@mui/icons-material/BarChart";
 import "@fontsource/roboto/400.css";
 
 const SideBar = () => {
-  const [selectedIndex, setSelectedIndex] = useState(0);
-
+  const [selectedIndex, setSelectedIndex] = useState(1);
   const [user] = useAtom(userAtom);
-  const userName = localStorage.getItem("name");
   const navigate = useNavigate();
+
   const toCalendar = () => {
     setSelectedIndex(0);
     navigate(`/${user.id}/employeCalendar`);
@@ -31,7 +30,7 @@ const SideBar = () => {
 
   const toUserPage = () => {
     setSelectedIndex(1);
-    navigate("/userPage");
+    navigate("/user_page");
   };
 
   const toAnalitycs = () => {
@@ -54,7 +53,6 @@ const SideBar = () => {
       const value = (hash >> (i * 8)) & 0xff;
       color += `00${value.toString(16)}`.slice(-2);
     }
-    /* eslint-enable no-bitwise */
 
     return color;
   }

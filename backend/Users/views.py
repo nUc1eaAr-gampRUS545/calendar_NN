@@ -15,6 +15,13 @@ class UserList(generics.ListAPIView):
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated]
 
+    def get(self, request, *args, **kwargs):
+        context = self.get_queryset()
+        serializer = self.serializer_class(context, many=True)
+        users = {"data": serializer.data}
+        return Response(users, status=status.HTTP_200_OK)
+
+
 
 class RegistrationAPIView(APIView):
     permission_classes = [AllowAny]
@@ -40,8 +47,9 @@ class LoginAPIView(APIView):
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
+        data_response = {"data": serializer.data}
 
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(data_response, status=status.HTTP_200_OK)
 
 class TokenVerifyView(APIView):
     authentication_classes = [JWTAuthentication]
@@ -56,6 +64,7 @@ class TokenVerifyView(APIView):
             'surname':user.surname,
             'role': user.role,
             'work_mode': user.work_mode,
+            'tell':user.tell
         }}
 
         return Response(user_data, status=status.HTTP_200_OK)

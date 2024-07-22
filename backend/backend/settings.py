@@ -13,8 +13,16 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 from pathlib import Path
 from datetime import timedelta
 
+import os
+
+# BASE_DIR определен в вашем settings.py, это корневая директория вашего проекта
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+MEDIA_URL = '/uploads/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+
 
 
 # Quick-start development settings - unsuitable for production
@@ -33,6 +41,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'django.contrib.admin',
+    'jwt',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -89,7 +98,7 @@ DATABASES = {
         'NAME': 'calendar',       
         'USER': 'postgres',    
         'PASSWORD': 'qwerty', 
-        'HOST': 'localhost',    
+        'HOST': '127.0.0.1',    
         'PORT': 5432,     
     }
 }

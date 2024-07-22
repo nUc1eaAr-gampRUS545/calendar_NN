@@ -26,6 +26,8 @@ const AppLayout = () => {
           surname: user.surname,
           role: user.role,
           work_mode: user.work_mode,
+          tell:user.tell,
+          email:user.email
         });
         //navigate("/");
       }

@@ -1,40 +1,87 @@
 declare module "moduleTypes" {
+  import * as React from "react";
   type Task = {
     id: number;
     title: string;
     description?: string;
+    venue: string;
+    files: number[];
+    users: number[];
+    importance: string;
     created_at: Date;
+    start_date: Date;
     due_date: Date;
     updated_at?: Date;
-    is_completed?: Date;
+    is_completed?: boolean;
   };
+  interface OrganizationType {
+    name: string;
+    id: number;
+  }
+  interface HandleDatasProps {
+    start: Date | null | undefined;
+    end: Date | null | undefined;
+    id: number;
+    title: string;
+   
+    venue: string;
+    filesDataBase: number[];
+    users: number[];
+    importance: string;
+    description: string | underfind;
+  }
+  interface BasicSelectProps {
+    attributs: OrganizationType[] | string[];
+    setAttribut: React.Dispatch<React.SetStateAction<number | underfind>>;
+    options?: string;
+    placeholder: string;
+    valueProps?:string
+  }
+  interface LoginAuthResponse {
+    id: number;
+    token: string;
+  }
   interface User {
+    id: number;
     name: string;
     surname: string;
     email: string;
+    organization: number[];
     is_active: boolean;
   }
   type LoginTrelProps = {
     isLoggedIn: boolean;
     setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
   };
- 
+  interface InputProps {
+    value: string;
+    onChange: React.Dispatch<React.SetStateAction<string | underfind>>;
+    onBlur: any;
+    [key: string]: any;
+  }
+
   interface CRUDTaskProps {
-    deleteTask: MouseEventHandler<HTMLButtonElement> | undefined;
-    setEnd(date: Date | null): void;
-    openDraw:boolean;
-    closeDrawer:()=>void;
-    startTask:Date | null | undefined;
-    endTask:Date | null | undefined;
-    updateStartTime:(start: Date | null) => void;
-    titleTask:string;
-    descriptionTask:string;
-    setDescriptionTask: ChangeEventHandler<HTMLTextAreaElement> | undefined;
+    setExecutors: Dispatch<SetStateAction<number[]>>;
+    setPlaceExecutionTask: Dispatch<SetStateAction<string>>;
+    setWorkStatus: Dispatch<SetStateAction<string>>;
+    workStatus: string;
+    executors: number[];
+    placeExecutionTask: string;
+    taskId: number | underfind;
+    setEnd(date: dayjs): void;
+    setStart(date: dayjs): void;
+    updateStartTime(date: dayjs): void;
+    openDraw: boolean;
+    filesDataBase:number[] | undefined;
+    userlist: User[];
+    closeDrawer: () => void;
+    startTask: Date | null | undefined;
+    endTask: Date | null | undefined;
+    titleTask: string;
     updateTitleTask: ChangeEventHandler<HTMLTextAreaElement> | undefined;
-    createTask:(employeeId: number) => Promise<void>;
-    selectUser:number;
-    buttonLabel:string;
+    selectUserID: number;
+    buttonLabel: string;
+    description: string ;
+    setDescription: Dispatch<SetStateAction<string>>;
+  }
 }
-}
-
-

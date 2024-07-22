@@ -13,7 +13,6 @@ const AuthLayout = () => {
       if (!isAuth) {
         setLoading(false);
         //navigate('/login')
-        console.log("nado reg");
       } else {
         //navigate('/')
       }
