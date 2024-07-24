@@ -35,7 +35,7 @@ const SideBar = () => {
 
   const toAnalitycs = () => {
     setSelectedIndex(2);
-    navigate("/analitycs");
+    navigate("/applications");
   };
 
   function stringToColor(string: string) {
@@ -110,7 +110,7 @@ const SideBar = () => {
             <ListItemIcon>
               <BarChartIcon />
             </ListItemIcon>
-            <ListItemText primary="Organizations" />
+            <ListItemText primary="Applications" />
           </ListItemButton>
         </List>
         <Box sx={{ width: "40%", ml: "auto", mr: "auto" }}>

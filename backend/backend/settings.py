@@ -53,7 +53,10 @@ INSTALLED_APPS = [
     'Users.apps.UsersConfig',
     'Tasks.apps.TasksConfig',
     'Files.apps.FilesConfig',
-    'Organization.apps.OrganizationConfig'
+    'TypesWork.apps.TypesworkConfig',
+    'Organization.apps.OrganizationConfig',
+    'Briefing.apps.BriefingConfig',
+    'Applications.apps.ApplicationsConfig'
 ]
 
 MIDDLEWARE = [

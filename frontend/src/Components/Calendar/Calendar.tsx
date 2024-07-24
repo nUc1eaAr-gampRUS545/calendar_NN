@@ -1,47 +1,26 @@
 import React, { useState, useEffect } from "react";
 import { Calendar, dateFnsLocalizer } from "react-big-calendar";
-import format from "date-fns/format";
-import parse from "date-fns/parse";
-import startOfWeek from "date-fns/startOfWeek";
-import getDay from "date-fns/getDay";
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import {
-  Box,
-  FormControl,
-  Select,
-  MenuItem,
-  Drawer,
-  List,
-  ListItem,
-  Modal,
-  Button,
-  Typography,
-} from "@mui/material";
+import { Box, FormControl, Select, MenuItem, Typography, Modal } from "@mui/material";
 import "react-datepicker/dist/react-datepicker.css";
 import { useAtom } from "jotai";
 import { useParams } from "react-router-dom";
-import { tasksAtom, userAtom } from "../../App";
+import { tasksAtom, userAtom, users } from "../../App";
 import taskApi from "../../api/taskApi";
 import { AxiosResponse } from "axios";
-import { locales } from "../../utils/constants";
 import { style } from "../../utils/style";
 import { HandleDatasProps, Task, User } from "moduleTypes";
 import { CRUDTask } from "../Popup/CRUDTask";
 import apiForUsers from "../../api/userListApi";
-
-const localizer = dateFnsLocalizer({
-  format,
-  parse,
-  startOfWeek,
-  getDay,
-  locales,
-});
+import { eventPropGetter } from "../../helpers/eventPropGetter";
+import { updateEventsCalendar } from "../../helpers/updateEventsCalendar";
+import { localizer } from "../../helpers/localizer";
 
 const BigCalendar: React.FC = () => {
   const [tasks, setTasks] = useAtom(tasksAtom);
   const { employeeId } = useParams<{ employeeId: string }>();
   const [user] = useAtom(userAtom);
-  const [userlist, setUserList] = useState<User[]>([]);
+  const [userlist] = useAtom<User[]>(users);
   const [selectUserID, setSelectUserID] = useState<number>(user.id);
   const [data, setData] = useState<AxiosResponse<any, any>>();
   const [openDraw, setOpenDraw] = useState(false);
@@ -68,18 +47,10 @@ const BigCalendar: React.FC = () => {
     setIdTask(0);
     setFilesDataBase([]);
     setExecutors([]);
-    setTitleTask('');
-    setButtonLabel("");}
-  const handleClose = () => setOpen(false);
-
-  const getUserList = async () => {
-    const res = await apiForUsers.getUserlist();
-    try {
-      setUserList(res.data as any);
-    } catch (err) {
-      console.error(err);
-    }
+    setTitleTask("");
+    setButtonLabel("");
   };
+  const handleClose = () => setOpen(false);
 
   const updateSelectUserID = (e: React.ChangeEvent<{ value: unknown }>) => {
     setSelectUserID(e.target.value as number);
@@ -122,24 +93,9 @@ const BigCalendar: React.FC = () => {
     setButtonLabel("Update");
   };
 
-
-
   const updateStartTime = (start: Date | null) => {
     setStart(start);
   };
-  const updateTasks =(tasks:Task[])=>{
-  return tasks.map((task: Task) => ({
-    title: task.title,
-    description: task.description,
-    venue: task.venue,
-    filesDataBase: task.files,
-    users: task.users,
-    importance: task.importance,
-    id: task.id,
-    resource: task.id,
-    start: new Date(task.start_date),
-    end: new Date(task.due_date),
-  }));}
 
   useEffect(() => {
     const getTasks = async () => {
@@ -152,36 +108,20 @@ const BigCalendar: React.FC = () => {
       }
     };
     getTasks();
-    
   }, [selectUserID, openDraw, setTasks]);
 
-  useEffect(() => {
-    getUserList();
-  }, [employeeId, openDraw]);
-
-  const eventPropGetter = (event: any) => {
-    let backgroundColor = "";
-    switch (event.importance) {
-      case "Простые работы":
-        backgroundColor = "#aae0ff";
-        break;
-      case "Работы повышенной сложности":
-        backgroundColor = "orange";
-        break;
-      default:
-        backgroundColor = "blue";
-    }
-    return { style: { backgroundColor } };
-  };
+  // useEffect(() => {
+  //   getUserList();
+  // }, [employeeId, openDraw]);
 
   return (
     <Box sx={{ height: "96vh", margin: "2vh" }}>
-      <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+      {/* <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
         <Select
           labelId="select-user-label"
           id="select-user"
           value={selectUserID}
-          onChange={()=>updateSelectUserID}
+          onChange={() => updateSelectUserID}
           label="Select User"
         >
           {userlist.map((option) => (
@@ -190,7 +130,7 @@ const BigCalendar: React.FC = () => {
             </MenuItem>
           ))}
         </Select>
-      </FormControl>
+      </FormControl> */}
       <Modal
         open={open}
         onClose={handleClose}
@@ -208,10 +148,9 @@ const BigCalendar: React.FC = () => {
       </Modal>
       <Box sx={{ height: "90%" }}>
         <Calendar
-          events={updateTasks(tasks)}
+          events={updateEventsCalendar(tasks)}
           localizer={localizer}
           onSelectSlot={({ start, end }) => HandleData({ start, end })}
-         
           onDoubleClickEvent={({
             start,
             end,
@@ -237,7 +176,7 @@ const BigCalendar: React.FC = () => {
           }}
           startAccessor="start"
           endAccessor="end"
-          style={{ fontFamily: "roboto",backgroundColor:"#eef8ff"}}
+          style={{ fontFamily: "roboto", backgroundColor: "#eef8ff" }}
           selectable
           eventPropGetter={eventPropGetter}
         />

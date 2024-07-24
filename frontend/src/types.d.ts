@@ -15,6 +15,7 @@ declare module "moduleTypes" {
     is_completed?: boolean;
   };
   interface OrganizationType {
+    surname?: string;
     name: string;
     id: number;
   }
@@ -23,7 +24,6 @@ declare module "moduleTypes" {
     end: Date | null | undefined;
     id: number;
     title: string;
-   
     venue: string;
     filesDataBase: number[];
     users: number[];

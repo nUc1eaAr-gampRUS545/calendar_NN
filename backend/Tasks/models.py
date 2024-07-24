@@ -14,7 +14,7 @@ class Task(models.Model):
     is_completed = models.BooleanField(default=False)
     venue = models.CharField(max_length=255, blank=False)
     importance = models.CharField(max_length=255)
-    files = models.ManyToManyField(UploadedFile, related_name='files', blank=False)
+    files = models.ManyToManyField(UploadedFile, related_name='files', blank=False,)
 
     def __str__(self):
         return self.title

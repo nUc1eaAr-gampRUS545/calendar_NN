@@ -45,7 +45,7 @@ const BasicSelect: React.FC<BasicSelectProps> = ({
               } else {
                 return (
                   <MenuItem key={data.id} value={data.id}>
-                    {data.name}
+                    {`${data.name} ${data.surname == null ? '' : data.surname}`}
                   </MenuItem>
                 );
               }

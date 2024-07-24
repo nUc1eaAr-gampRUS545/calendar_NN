@@ -1,4 +1,4 @@
-import BigCalendar from "./Calendar/Calendar";
+import BigCalendar from "../Components/Calendar/Calendar";
 import { Box } from "@mui/material";
 
 const CalendarLayout = () => {

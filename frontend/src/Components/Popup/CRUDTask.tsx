@@ -53,6 +53,7 @@ export const CRUDTask: React.FC<CRUDTaskProps> = (props) => {
       due_date: props.endTask,
     });
     setFiles([]);
+    props.closeDrawer();
 
     try {
       if (props.taskId) {
@@ -80,9 +81,11 @@ export const CRUDTask: React.FC<CRUDTaskProps> = (props) => {
         setTasks((prevTasks: any) =>
           prevTasks.filter((task: Task) => task.id !== props.taskId)
         );
+        
       }
       props.closeDrawer();
     } catch (err) {
+      props.closeDrawer();
       console.error(err);
     }
   };

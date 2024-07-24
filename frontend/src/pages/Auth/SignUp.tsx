@@ -9,41 +9,23 @@ import {
 } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import authApi from "../../api/authApi";
-import BasicSelect from "../Inputs/SelectMUI";
+import BasicSelect from "../../Components/Inputs/SelectMUI";
 import { AxiosResponse } from "axios";
 
 import { OrganizationType } from "moduleTypes";
-import PositionedSnackbar from "../Popup/MessagePopup";
+import PositionedSnackbar from "../../Components/Popup/MessagePopup";
+import { organizations } from "../../App";
+import { useAtom } from "jotai";
 
-const SignUp: React.FC = () => {
+const SignUpPage: React.FC = () => {
   const navigate = useNavigate();
+  const [organizationsDataBase] = useAtom(organizations)
 
   const [loading, setLoading] = useState<boolean>(false);
-  const [organizationsDataBase, setOrganizationsDataBase] = useState<
-    OrganizationType[]
-  >([]);
+  
   const [organization, setOrganization] = useState<number>();
   const [errorsServer, setErrorsServer] = useState<string[]>([]);
   const [snackbarOpen, setSnackbarOpen] = useState<boolean>(false);
-
-  useEffect(() => {
-    const fetchOrganizations = async () => {
-      try {
-        const response: AxiosResponse<OrganizationType[]> =
-          await authApi.getOrgs();
-        const data = response.data;
-        if (data) {
-          setOrganizationsDataBase(data);
-        } else {
-          console.error("Error 500: No data returned");
-        }
-      } catch (err) {
-        console.error("An error occurred while fetching organizations:", err);
-      }
-    };
-
-    fetchOrganizations();
-  }, []);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -283,7 +265,7 @@ const SignUp: React.FC = () => {
           color="primary"
           variant="outlined"
           component={Link}
-          to="/Login"
+          to="/sign-in"
           sx={{ textTransform: "none", width: "100%" }}
         >
           Already have an account? Log In
@@ -293,4 +275,4 @@ const SignUp: React.FC = () => {
   );
 };
 
-export default SignUp;
+export default SignUpPage;

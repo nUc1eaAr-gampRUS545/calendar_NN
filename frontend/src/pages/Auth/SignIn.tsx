@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { AxiosResponse } from "axios";
 import authApi from "../../api/authApi";
 import { LoginAuthResponse, LoginTrelProps } from "moduleTypes";
-const LoginTrel: React.FC<LoginTrelProps> = ({ setIsLoggedIn }) => {
+const SignInPage: React.FC<LoginTrelProps> = ({ setIsLoggedIn }) => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState<boolean>(false);
   const [usernameErrText, setUsernameErrText] = useState<string>("");
@@ -92,7 +92,7 @@ const LoginTrel: React.FC<LoginTrelProps> = ({ setIsLoggedIn }) => {
         color="primary"
         variant="outlined"
         component={Link}
-        to="/Signup"
+        to="/sign-up"
         sx={{ textTransform: "none", width: "100%" }}
       >
         Нет аккаунта? Регистрация
@@ -101,4 +101,4 @@ const LoginTrel: React.FC<LoginTrelProps> = ({ setIsLoggedIn }) => {
   );
 };
 
-export default LoginTrel;
+export default SignInPage;

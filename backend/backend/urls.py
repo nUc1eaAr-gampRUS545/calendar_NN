@@ -4,6 +4,7 @@ from Users.views import *
 from Users import routesUser
 from Tasks import routesTasks
 from Organization import routesOrg
+from TypesWork import routesTypesWork
 from Files import routesFile
 from backend import settings
 from django.conf.urls.static import static
@@ -15,6 +16,7 @@ urlpatterns = [
     path('api/v1/tasks/',include(routesTasks)),
     path('api/v1/organizations/',include(routesOrg)),
     path('api/v1/files/',include(routesFile)),
+    path('api/v1/types-work/',include(routesTypesWork)),
 
 ]
 if settings.DEBUG:
