@@ -5,8 +5,8 @@ from .views import ApplicationsListView,ApplicationDeleteView,ApplicationsCreate
 
 router = routers.SimpleRouter()
 urlpatterns = [
-    path('', ApplicationsListView,),
-    path('', ApplicationsCreateView.as_view(),),
+    path('', ApplicationsListView.as_view(),),
+    path('create_action/', ApplicationsCreateView.as_view(),),
     path('<int:pk>/', ApplicationDeleteView.as_view(),),
     path('<int:pk>/', ApplicationUpdateView.as_view(),),
 ]

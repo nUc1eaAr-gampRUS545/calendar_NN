@@ -13,7 +13,7 @@ import BasicSelect from "../../Components/Inputs/SelectMUI";
 import { AxiosResponse } from "axios";
 
 import { OrganizationType } from "moduleTypes";
-import PositionedSnackbar from "../../Components/Popup/MessagePopup";
+import PositionedSnackbar from "../../Popup/MessagePopup";
 import { organizations } from "../../App";
 import { useAtom } from "jotai";
 

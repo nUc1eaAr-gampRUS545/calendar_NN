@@ -10,7 +10,7 @@ import taskApi from "../../api/taskApi";
 import { AxiosResponse } from "axios";
 import { style } from "../../utils/style";
 import { HandleDatasProps, Task, User } from "moduleTypes";
-import { CRUDTask } from "../Popup/CRUDTask";
+import { CRUDTask } from "../../Popup/CRUDTask";
 import apiForUsers from "../../api/userListApi";
 import { eventPropGetter } from "../../helpers/eventPropGetter";
 import { updateEventsCalendar } from "../../helpers/updateEventsCalendar";

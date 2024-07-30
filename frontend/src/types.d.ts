@@ -30,12 +30,30 @@ declare module "moduleTypes" {
     importance: string;
     description: string | underfind;
   }
+  type forms = {
+    name: string;
+    surname: string;
+    place: string;
+    start_date: Date;
+    due_date: Date;
+    phone: string;
+    createdUser:number;
+    responsiblePerson: number | underfind;
+    organization: number | underfind;
+  };
+  interface CreateApplicationPopupProps {
+    open: boolean;
+    onClose: () => void;
+    formValues: forms;
+  
+    setValuesForms:React.Dispatch.SetStateAction<forms>
+  }
   interface BasicSelectProps {
     attributs: OrganizationType[] | string[];
     setAttribut: React.Dispatch<React.SetStateAction<number | underfind>>;
     options?: string;
     placeholder: string;
-    valueProps?:string
+    valueProps?: string;
   }
   interface LoginAuthResponse {
     id: number;
@@ -72,7 +90,7 @@ declare module "moduleTypes" {
     setStart(date: dayjs): void;
     updateStartTime(date: dayjs): void;
     openDraw: boolean;
-    filesDataBase:number[] | undefined;
+    filesDataBase: number[] | undefined;
     userlist: User[];
     closeDrawer: () => void;
     startTask: Date | null | undefined;
@@ -81,7 +99,7 @@ declare module "moduleTypes" {
     updateTitleTask: ChangeEventHandler<HTMLTextAreaElement> | undefined;
     selectUserID: number;
     buttonLabel: string;
-    description: string ;
+    description: string;
     setDescription: Dispatch<SetStateAction<string>>;
   }
 }

@@ -9,40 +9,22 @@ import {
   TextField,
   FormControl,
 } from "@mui/material";
-import { organizations, users } from "../../App";
+import { organizations, userAtom, users } from "../App";
 import { useAtom } from "jotai";
-import BasicSelect from "../Inputs/SelectMUI";
-
-interface CreateApplicationPopupProps {
-  open: boolean;
-  onClose: () => void;
-  onCreate: (formValues: {
-    name: string;
-    surname: string;
-    start_date: string;
-    due_date: string;
-    tell: string;
-    responsiblePerson: string;
-    organization: string;
-  }) => void;
-}
+import BasicSelect from "../Components/Inputs/SelectMUI";
+import { ApplicationInterface } from "../utils/constants";
+import { CreateApplicationPopupProps, forms } from "moduleTypes";
+import apiApplications from "../api/apiApplications";
 
 const CreateApplicationPopup: React.FC<CreateApplicationPopupProps> = ({
   open,
   onClose,
-  onCreate,
+  formValues,
+  setValuesForms
 }) => {
   const [organizationsDataBase] = useAtom(organizations);
   const [usersDataBase] = useAtom(users);
-  const [formValues, setFormValues] = useState({
-    name: "",
-    surname: "",
-    start_date: "",
-    due_date: "",
-    tell: "",
-    responsiblePerson: "",
-    organization: "",
-  });
+  const [user] = useAtom(userAtom);
   const [organization, setOrganization] = useState<number>();
   const [userForm, setUserForm] = useState<number>();
   const handleChange = (
@@ -51,11 +33,14 @@ const CreateApplicationPopup: React.FC<CreateApplicationPopupProps> = ({
     >
   ) => {
     const { name, value } = e.target;
-    setFormValues({ ...formValues, [name as string]: value as string });
+    setValuesForms({ ...formValues, [name as string]: value as string });
   };
 
   const handleSubmit = () => {
-    onCreate(formValues);
+    formValues.organization = organization;
+    formValues.responsiblePerson = userForm;
+    formValues.createdUser = user.id;
+   apiApplications.create(formValues);
     onClose();
   };
 
@@ -65,9 +50,7 @@ const CreateApplicationPopup: React.FC<CreateApplicationPopupProps> = ({
       <DialogContent>
         <Box
           component="form"
-          sx={{
-            "& .MuiTextField-root": { m: 1, width: "100%" },
-          }}
+          sx={{"& .MuiTextField-root": { m: 1, width: "100%" }}}
           noValidate
           autoComplete="off"
         >
@@ -83,6 +66,13 @@ const CreateApplicationPopup: React.FC<CreateApplicationPopupProps> = ({
             label="Surname"
             name="surname"
             value={formValues.surname}
+            onChange={handleChange}
+          />
+          <TextField
+            required
+            label="Place"
+            name="place"
+            value={formValues.place}
             onChange={handleChange}
           />
           <TextField
@@ -108,8 +98,8 @@ const CreateApplicationPopup: React.FC<CreateApplicationPopupProps> = ({
           <TextField
             required
             label="Phone"
-            name="tell"
-            value={formValues.tell}
+            name="phone"
+            value={formValues.phone}
             onChange={handleChange}
             inputProps={{
               maxLength: 11,

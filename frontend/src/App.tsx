@@ -13,14 +13,15 @@ import AuthLayout from "./Components/authLayout";
 import CalendarLayout from "./pages/CalendarLayout";
 import SignInPage from "./pages/Auth/SignIn";
 
-import { UserInterface } from "./utils/constants";
+import { ApplicationInterface, UserInterface } from "./utils/constants";
 import SignUp from "./pages/Auth/SignUp";
 import authApi from "./api/authApi";
 import SignUpPage from "./pages/Auth/SignUp";
 import Applications from "./pages/Applications";
-import { OrganizationType, User } from "moduleTypes";
+import { forms, OrganizationType, User } from "moduleTypes";
 import { AxiosResponse } from "axios";
 import apiForUsers from "./api/userListApi";
+import apiApplications from "./api/apiApplications";
 
 export const tasksAtom = atom([]);
 
@@ -32,6 +33,7 @@ type MounthState = {
 export const Mounth = createContext<MounthState | null>(null);
 export const YearAtom = atom<number>(new Date().getFullYear());
 export const userAtom = atom(UserInterface);
+export const applications = atom<forms[]>([]);
 export const organizations = atom<OrganizationType[]>([]);
 export const users = atom<User[]>([]);
 export const logInAtom = atom<boolean>(false);
@@ -97,6 +99,8 @@ export default function App() {
         }
       })
       .catch((err) => console.error(err));
+
+      apiApplications.get()
   }, []);
 
   return (

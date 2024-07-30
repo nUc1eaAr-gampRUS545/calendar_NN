@@ -1,25 +1,43 @@
+import { useEffect, useState } from "react";
 import RecipeReviewCard from "../Components/CardApplication";
-import CreateApplicationPopup from "../Components/Popup/CreateApplicationPopup";
+import CreateApplicationPopup from "../Popup/CreateApplicationPopup";
+import Button from "@mui/material/Button";
+import apiApplications from "../api/apiApplications";
+import { forms } from "moduleTypes";
+import { ApplicationInterface } from "../utils/constants";
 
 const Applications: React.FC = () => {
+  const [openForms, setOpenForms] = useState<boolean>(false);
+  const [valuesForms, setValuesForms] = useState<forms>(ApplicationInterface);
+  const [applicationsDataBase, setApplicationsDataBase] = useState<any>([]);
+  useEffect(() => {
+    apiApplications.get().then((data)=>{
+      if(data){
+        setApplicationsDataBase(data)
+      }
+      else{
+        console.error("No data Applications")
+      }
+    })
+    .catch((err)=>console.log(err))
+  }, []);
   return (
     <>
-      <RecipeReviewCard />
+      {applicationsDataBase.map((data) => {
+        <RecipeReviewCard />;
+      })}
+
       <CreateApplicationPopup
-        open={true}
-        onClose={() => {}}
-        onCreate={function (formValues: {
-          name: string;
-          surname: string;
-          start_date: string;
-          due_date: string;
-          tell: string;
-          responsiblePerson: string;
-          organization: string;
-        }): void {
-          throw new Error("Function not implemented.");
-        }}
+        open={openForms}
+        onClose={() => setOpenForms(!openForms)}
+        formValues={valuesForms}
+        setValuesForms={setValuesForms}
       />
+      <div style={{ position: "fixed", bottom: "20px", right: "20px" }}>
+        <Button variant="outlined" onClick={() => setOpenForms(!openForms)}>
+          +
+        </Button>
+      </div>
     </>
   );
 };

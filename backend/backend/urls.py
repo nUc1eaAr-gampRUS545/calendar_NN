@@ -8,6 +8,7 @@ from TypesWork import routesTypesWork
 from Files import routesFile
 from backend import settings
 from django.conf.urls.static import static
+from Applications import routesApplications
 
 
 urlpatterns = [
@@ -17,6 +18,7 @@ urlpatterns = [
     path('api/v1/organizations/',include(routesOrg)),
     path('api/v1/files/',include(routesFile)),
     path('api/v1/types-work/',include(routesTypesWork)),
+    path('api/v1/applications/',include(routesApplications)),
 
 ]
 if settings.DEBUG:

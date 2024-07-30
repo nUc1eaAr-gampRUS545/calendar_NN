@@ -17,3 +17,20 @@ class TypesWorkList(generics.ListAPIView):
         serializer = self.serializer_class(context, many=True)
         types = {"data": serializer.data}
         return Response(types, status=status.HTTP_200_OK)
+class TypesWorkCreate(generics.CreateAPIView):
+    queryset = TypeWorkModel.objects.all()
+    serializer_class = TypeWorkSerializer
+    
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(
+            {
+                "data": "Success data!",
+            },
+            status=status.HTTP_201_CREATED,
+        )
+    

@@ -3,7 +3,7 @@ import enUS from "date-fns/locale/en-US";
 export const locales={
     "en-US": enUS,
   };
-export const serverURL = "http://localhost:8000/";
+export const serverURL = "http://localhost:8000";
 
 export const resources = [
     { id: 1, title: "Dr Alex" },
@@ -21,4 +21,16 @@ export const UserInterface = {
   work_mode: "",
   tell:"",
   email:""
+}
+export const DATE_NOW = new Date();
+export const ApplicationInterface = {
+  name: "",
+  surname: "",
+  place:"",
+  createdUser:0,
+  start_date: DATE_NOW,
+  due_date: DATE_NOW,
+  phone: "",
+  responsiblePerson: [],
+  organization: [],
 }

@@ -3,18 +3,18 @@ import { Form, Formik } from "formik";
 import { CRUDTaskProps, Task } from "moduleTypes";
 import { useState } from "react";
 import DatePicker from "react-datepicker";
-import TextAreaMUI from "../Inputs/TextAreaMUI";
+import TextAreaMUI from "../Components/Inputs/TextAreaMUI";
 import "react-datepicker/dist/react-datepicker.css";
-import StyledDatePickerWrapper from "../../styledComponents/DatePickerSC";
-import MultipleSelectChip from "../Inputs/ChipSelectMUI";
-import BasicSelect from "../Inputs/SelectMUI";
-import taskApi from "../../api/taskApi";
-import { tasksAtom } from "../../App";
+import StyledDatePickerWrapper from "../styledComponents/DatePickerSC";
+import MultipleSelectChip from "../Components/Inputs/ChipSelectMUI";
+import BasicSelect from "../Components/Inputs/SelectMUI";
+import taskApi from "../api/taskApi";
+import { tasksAtom } from "../App";
 import { useAtom } from "jotai";
-import Contact from "../Inputs/UploadFile";
-import { uploadFileApi } from "../../api/apiFileHand";
+import Contact from "../Components/Inputs/UploadFile";
+import { uploadFileApi } from "../api/apiFileHand";
 // import { AxiosResponse } from "axios";
-import { FileDisplay } from "../FileDisplay";
+import { FileDisplay } from "../Components/FileDisplay";
 
 export const CRUDTask: React.FC<CRUDTaskProps> = (props) => {
   const [, setTasks] = useAtom(tasksAtom);
