@@ -73,7 +73,7 @@ export default function App() {
 
   useEffect(() => {
     isAuth();
-    isLoggedIn ? navigate("user_page") : navigate("login");
+    isLoggedIn ? navigate("/user_page") : navigate("/sign_in");
   }, [isLoggedIn]);
 
   useEffect(() => {
@@ -128,12 +128,12 @@ export default function App() {
       </Route>
       <Route path="/" element={<AuthLayout />}>
         <Route
-          path="/sign-in"
+          path="/sign_in"
           element={
             <SignInPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
           }
         />
-        <Route path="/sign-up" element={<SignUpPage />} />
+        <Route path="/sign_up" element={<SignUpPage />} />
       </Route>
     </Routes>
   );

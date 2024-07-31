@@ -1,10 +1,20 @@
 import { useEffect, useState } from "react";
 import RecipeReviewCard from "../Components/CardApplication";
-import CreateApplicationPopup from "../Popup/CreateApplicationPopup";
+import CreateApplicationPopup from "../Components/Popup/CreateApplicationPopup";
 import Button from "@mui/material/Button";
 import apiApplications from "../api/apiApplications";
 import { forms } from "moduleTypes";
 import { ApplicationInterface } from "../utils/constants";
+
+interface ApplicationDataBase {
+  due_date: string;
+id: number
+is_active: boolean
+name: string
+organization: number
+start_date: string
+surname: string
+}
 
 const Applications: React.FC = () => {
   const [openForms, setOpenForms] = useState<boolean>(false);
@@ -23,8 +33,8 @@ const Applications: React.FC = () => {
   }, []);
   return (
     <>
-      {applicationsDataBase.map((data) => {
-        <RecipeReviewCard />;
+      {applicationsDataBase.map((data:ApplicationDataBase) => {
+        <RecipeReviewCard card={data}/>;
       })}
 
       <CreateApplicationPopup

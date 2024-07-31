@@ -9,12 +9,12 @@ import {
   TextField,
   FormControl,
 } from "@mui/material";
-import { organizations, userAtom, users } from "../App";
+import { organizations, userAtom, users } from "../../App";
 import { useAtom } from "jotai";
-import BasicSelect from "../Components/Inputs/SelectMUI";
-import { ApplicationInterface } from "../utils/constants";
+import BasicSelect from "../Inputs/SelectMUI";
+import { ApplicationInterface } from "../../utils/constants";
 import { CreateApplicationPopupProps, forms } from "moduleTypes";
-import apiApplications from "../api/apiApplications";
+import apiApplications from "../../api/apiApplications";
 
 const CreateApplicationPopup: React.FC<CreateApplicationPopupProps> = ({
   open,

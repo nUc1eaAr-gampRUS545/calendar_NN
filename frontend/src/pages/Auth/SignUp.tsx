@@ -13,7 +13,7 @@ import BasicSelect from "../../Components/Inputs/SelectMUI";
 import { AxiosResponse } from "axios";
 
 import { OrganizationType } from "moduleTypes";
-import PositionedSnackbar from "../../Popup/MessagePopup";
+import PositionedSnackbar from "../../Components/Popup/MessagePopup";
 import { organizations } from "../../App";
 import { useAtom } from "jotai";
 
@@ -265,7 +265,7 @@ const SignUpPage: React.FC = () => {
           color="primary"
           variant="outlined"
           component={Link}
-          to="/sign-in"
+          to="/sign_in"
           sx={{ textTransform: "none", width: "100%" }}
         >
           Already have an account? Log In
