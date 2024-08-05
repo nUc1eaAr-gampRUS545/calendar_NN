@@ -3,18 +3,9 @@ import RecipeReviewCard from "../Components/CardApplication";
 import CreateApplicationPopup from "../Components/Popup/CreateApplicationPopup";
 import Button from "@mui/material/Button";
 import apiApplications from "../api/apiApplications";
-import { forms } from "moduleTypes";
+import { ApplicationDataBase, forms } from "moduleTypes";
 import { ApplicationInterface } from "../utils/constants";
-
-interface ApplicationDataBase {
-  due_date: string;
-id: number
-is_active: boolean
-name: string
-organization: number
-start_date: string
-surname: string
-}
+import { Grid } from "@mui/material";
 
 const Applications: React.FC = () => {
   const [openForms, setOpenForms] = useState<boolean>(false);
@@ -33,10 +24,11 @@ const Applications: React.FC = () => {
   }, []);
   return (
     <>
-      {applicationsDataBase.map((data:ApplicationDataBase) => {
-        <RecipeReviewCard card={data}/>;
-      })}
-
+    <Grid container spacing={8} style={{margin:"50px"}}>
+      {applicationsDataBase.map((data:ApplicationDataBase) => 
+        <RecipeReviewCard card={data}/>
+      )}
+</Grid>
       <CreateApplicationPopup
         open={openForms}
         onClose={() => setOpenForms(!openForms)}

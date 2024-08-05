@@ -37,16 +37,16 @@ declare module "moduleTypes" {
     start_date: Date;
     due_date: Date;
     phone: string;
-    createdUser:number;
-    responsiblePerson: number | underfind;
-    organization: number | underfind;
+    createdUser_id: number;
+    responsiblePerson_id: number | underfind;
+    organization_id: number | underfind;
   };
   interface CreateApplicationPopupProps {
     open: boolean;
     onClose: () => void;
     formValues: forms;
-  
-    setValuesForms:React.Dispatch.SetStateAction<forms>
+
+    setValuesForms: React.Dispatch.SetStateAction<forms>;
   }
   interface BasicSelectProps {
     attributs: OrganizationType[] | string[];
@@ -101,5 +101,17 @@ declare module "moduleTypes" {
     buttonLabel: string;
     description: string;
     setDescription: Dispatch<SetStateAction<string>>;
+  }
+  interface ApplicationDataBase {
+    due_date: string;
+    id: number;
+    is_active: boolean;
+    name: string;
+    start_date: string;
+    surname: string;
+    createdUser_id: number,
+    organization_id: number,
+    responsiblePerson_id: number,
+    created_at: string
   }
 }

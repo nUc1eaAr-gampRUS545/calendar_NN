@@ -8,7 +8,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import StyledDatePickerWrapper from "../../styledComponents/DatePickerSC";
 import MultipleSelectChip from "../Inputs/ChipSelectMUI";
 import BasicSelect from "../Inputs/SelectMUI";
-import taskApi from "../../api/taskApi";
+import taskApi from "../../api/apiTaskHendler";
 import { tasksAtom } from "../../App";
 import { useAtom } from "jotai";
 import Contact from "../Inputs/UploadFile";

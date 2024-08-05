@@ -92,7 +92,7 @@ const SignInPage: React.FC<LoginTrelProps> = ({ setIsLoggedIn }) => {
         color="primary"
         variant="outlined"
         component={Link}
-        to="/sign-up"
+        to="/sign_up"
         sx={{ textTransform: "none", width: "100%" }}
       >
         Нет аккаунта? Регистрация

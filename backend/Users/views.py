@@ -79,3 +79,13 @@ class UserDeleteView(generics.DestroyAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated]
+    
+class UserGetAPIView(APIView):
+        def get(self, request, pk, *args, **kwargs):
+            try:
+               user_instance = User.objects.get(id=pk)
+               serializer = UserSerializer(user_instance)
+               user_data = {"data": serializer.data}
+               return Response(user_data, status=status.HTTP_200_OK)
+            except User.DoesNotExist:
+               return Response({"detail": "User not found"}, status=status.HTTP_404_NOT_FOUND)

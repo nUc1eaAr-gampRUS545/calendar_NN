@@ -1,5 +1,3 @@
-import json
-from urllib import request
 from rest_framework import serializers
 from django.contrib.auth import authenticate
 
@@ -33,7 +31,8 @@ class RegistrationSerializer(serializers.ModelSerializer):
                            'tell',
                              'organization',
                                'password',
-                                 'token',)
+                                 'token',
+                                   'is_staff')
 
     def create(self, validated_data):
         organization = validated_data.pop('organization', '')

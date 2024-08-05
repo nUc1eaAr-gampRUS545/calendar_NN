@@ -35,11 +35,11 @@ const CreateApplicationPopup: React.FC<CreateApplicationPopupProps> = ({
     const { name, value } = e.target;
     setValuesForms({ ...formValues, [name as string]: value as string });
   };
-
+   console.log(user.id)
   const handleSubmit = () => {
-    formValues.organization = organization;
-    formValues.responsiblePerson = userForm;
-    formValues.createdUser = user.id;
+    formValues.organization_id = organization;
+    formValues.responsiblePerson_id = userForm;
+    formValues.createdUser_id = user.id;
    apiApplications.create(formValues);
     onClose();
   };

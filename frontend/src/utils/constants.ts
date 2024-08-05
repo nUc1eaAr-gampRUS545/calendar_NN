@@ -27,10 +27,10 @@ export const ApplicationInterface = {
   name: "",
   surname: "",
   place:"",
-  createdUser:0,
+  createdUser_id:0,
   start_date: DATE_NOW,
   due_date: DATE_NOW,
   phone: "",
-  responsiblePerson: [],
-  organization: [],
+  responsiblePerson_id: 0,
+  organization_id: 0,
 }

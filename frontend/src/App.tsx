@@ -20,8 +20,9 @@ import SignUpPage from "./pages/Auth/SignUp";
 import Applications from "./pages/Applications";
 import { forms, OrganizationType, User } from "moduleTypes";
 import { AxiosResponse } from "axios";
-import apiForUsers from "./api/userListApi";
+import apiForUsers from "./api/apiUserList";
 import apiApplications from "./api/apiApplications";
+import apiForOrhanization from "./api/apiOrganizationHandler";
 
 export const tasksAtom = atom([]);
 
@@ -77,7 +78,7 @@ export default function App() {
   }, [isLoggedIn]);
 
   useEffect(() => {
-    authApi
+    apiForOrhanization
       .getOrgs()
       .then((response) => {
         const data = response.data;
@@ -90,7 +91,7 @@ export default function App() {
       .catch((err) => console.error(err));
 
     apiForUsers
-      .getUserlist()
+      .getUserslist()
       .then((res) => {
         if (res.data) {
           setUsersDataBase(res.data as any);
