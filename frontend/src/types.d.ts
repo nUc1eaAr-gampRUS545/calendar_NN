@@ -31,6 +31,7 @@ declare module "moduleTypes" {
     description: string | underfind;
   }
   type forms = {
+    types_works_ids: number[];
     name: string;
     surname: string;
     place: string;
@@ -41,11 +42,14 @@ declare module "moduleTypes" {
     responsiblePerson_id: number | underfind;
     organization_id: number | underfind;
   };
+  type MounthState = {
+    mounth: React.ComponentState;
+    setMounth: React.ComponentState;
+  };
   interface CreateApplicationPopupProps {
     open: boolean;
     onClose: () => void;
     formValues: forms;
-
     setValuesForms: React.Dispatch.SetStateAction<forms>;
   }
   interface BasicSelectProps {
@@ -78,6 +82,11 @@ declare module "moduleTypes" {
     [key: string]: any;
   }
 
+  interface TypeWork {
+    id: number;
+    description: string;
+  }
+  
   interface CRUDTaskProps {
     setExecutors: Dispatch<SetStateAction<number[]>>;
     setPlaceExecutionTask: Dispatch<SetStateAction<string>>;
@@ -112,6 +121,8 @@ declare module "moduleTypes" {
     createdUser_id: number,
     organization_id: number,
     responsiblePerson_id: number,
+    types_works_ids:number[],
+    tell:string,
     created_at: string
   }
 }

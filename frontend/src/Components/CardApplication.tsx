@@ -13,11 +13,12 @@ import ShareIcon from "@mui/icons-material/Share";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { useEffect, useState } from "react";
-import { ApplicationDataBase, OrganizationType, User } from "moduleTypes";
+import { ApplicationDataBase, OrganizationType, TypeWork, User } from "moduleTypes";
 import apiForUsers from "../api/apiUserList";
 import stringToColor from "../helpers/colorIconUser";
 import convertToReadableDate from "../helpers/convertToReadableDate";
 import apiForOrhanization from "../api/apiOrganizationHandler";
+import apiTypesWorks from "../api/apiTypeWork";
 
 interface RecipeReviewCardProps {
   card: ApplicationDataBase;
@@ -29,6 +30,7 @@ interface ExpandMoreProps extends IconButtonProps {
 
 const ExpandMore = styled((props: ExpandMoreProps) => {
   const { expand, ...other } = props;
+  
   return <IconButton {...other} />;
 })(({ theme, expand }) => ({
   transform: !expand ? "rotate(0deg)" : "rotate(180deg)",
@@ -39,24 +41,53 @@ const ExpandMore = styled((props: ExpandMoreProps) => {
 }));
 
 const RecipeReviewCard: React.FC<RecipeReviewCardProps> = ({ card }) => {
+  const [specialTypesWork, setSpecialTypesWork] = useState<TypeWork[]>([]);
   const [expanded, setExpanded] = useState(false);
   const [createdUserInfo, setCreatedUserInfo] = useState<User | null>(null);
+  const [responsibleRersonInfo, setResponsibleRersonInfo] =
+    useState<User | null>(null);
   const [organizationInfo, setOrganizationInfo] =
     useState<OrganizationType | null>(null);
 
+  const getUsers = () => {
+    apiForUsers
+      .getUser(card.createdUser_id)
+      .then((res) => {
+        setCreatedUserInfo(res.data);
+        setResponsibleRersonInfo(res.data);
+      })
+      .catch((err) => console.error(err));
+  };
+  const getCreatedUserAndResponsPerson = () => {
+    Promise.all([
+      apiForUsers.getUser(card.createdUser_id).then((res) => setCreatedUserInfo(res.data)),
+      apiForUsers.getUser(card.responsiblePerson_id).then((res) => setResponsibleRersonInfo(res.data)),
+    ])
+    .catch((err) => console.error(err));
+  };
+
   useEffect(() => {
     if (card) {
-      apiForUsers
-        .getUser(card.createdUser_id)
-        .then((res) => setCreatedUserInfo(res.data))
-        .catch((err) => console.error(err));
+      card.responsiblePerson_id == card.createdUser_id
+        ? getUsers()
+        : getCreatedUserAndResponsPerson();
     }
     apiForOrhanization
       .getOrg(card.organization_id)
       .then((res) => setOrganizationInfo(res.data))
       .catch((err) => console.error(err));
+   
   }, [card]);
 
+  useEffect(() => {
+    apiTypesWorks.post(card.types_works_ids) // Оберните IDs в объект
+      .then((info) => {
+        setSpecialTypesWork(info.data); // Сохраните в состояние
+      })
+      .catch((err) => console.error(err));
+  }, [card.types_works_ids]);
+  
+console.log(specialTypesWork ? specialTypesWork.map((data)=>data):"")
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
@@ -121,27 +152,34 @@ const RecipeReviewCard: React.FC<RecipeReviewCardProps> = ({ card }) => {
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>
           <Typography variant="body1" color="text.primary" mt={2}>
-            <strong>Фамилия Имя:</strong>{" "}
-            {`${card.name} ${card.surname}`}
+            <strong>Фамилия Имя:</strong> {`${card.name} ${card.surname}`}
           </Typography>
           <Typography variant="body1" color="text.primary">
             <strong>Организация:</strong> {organizationInfo?.name}
           </Typography>
           <Typography variant="body1" color="text.primary">
-            <strong>Срок действия пропуска:</strong> {`${convertToReadableDate(card.start_date)} - ${convertToReadableDate(card.due_date)}`} 
+            <strong>Срок действия пропуска:</strong>{" "}
+            {`${convertToReadableDate(
+              card.start_date
+            )} - ${convertToReadableDate(card.due_date)}`}
           </Typography>
-          <Typography variant="body1" color="text.primary">
-            <strong>Основание для пропуска:</strong> Обеспечение бесперебойной
-            работы оборудования
+          <Typography variant="body1" >
+          <strong>Типы работ:</strong>
+        </Typography>
+        {specialTypesWork.map(type => (
+          <Typography key={type.id} variant="body2" color="text.secondary">
+            - {type.description}
           </Typography>
+        ))}
           <Typography variant="body1" color="text.primary">
             <strong>Наименование объекта/площадки:</strong>
           </Typography>
           <Typography variant="body1" color="text.primary">
-            <strong>Контактное лицо:</strong> Козлов Константин Павлович
+            <strong>Контактное лицо:</strong>
+            {` ${responsibleRersonInfo?.name} ${responsibleRersonInfo?.surname}`}
           </Typography>
           <Typography variant="body1" color="text.primary">
-            <strong>Контактный телефон:</strong> +7 (123) 456-78-90
+            <strong>Контактный телефон:</strong> {card.tell}
           </Typography>
         </CardContent>
       </Collapse>

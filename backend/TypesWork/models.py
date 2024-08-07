@@ -1,7 +1,6 @@
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 
-class TypeWorkModel (AbstractBaseUser, PermissionsMixin):
+class TypeWorkModel (models.Model):
     id = models.AutoField(primary_key=True)
     description = models.TextField(blank=True,default='')
     

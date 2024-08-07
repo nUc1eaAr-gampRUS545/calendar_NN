@@ -17,6 +17,7 @@ class TypesWorkList(generics.ListAPIView):
         serializer = self.serializer_class(context, many=True)
         types = {"data": serializer.data}
         return Response(types, status=status.HTTP_200_OK)
+    
 class TypesWorkCreate(generics.CreateAPIView):
     queryset = TypeWorkModel.objects.all()
     serializer_class = TypeWorkSerializer
@@ -33,4 +34,13 @@ class TypesWorkCreate(generics.CreateAPIView):
             },
             status=status.HTTP_201_CREATED,
         )
+class TypeWorkSpecialList(APIView):
+    def post(self, request):
+        type_ids = request.data.get('type_ids', []) 
+        if not isinstance(type_ids, list):
+            return Response({"error": "type_ids должно быть списком"}, status=status.HTTP_400_BAD_REQUEST)
+
+        types = TypeWorkModel.objects.filter(id__in=type_ids) 
+        serializer = {"data":TypeWorkSerializer(types, many=True) }
+        return Response(serializer.data, status=status.HTTP_200_OK)  
     

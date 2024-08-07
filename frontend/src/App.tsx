@@ -12,25 +12,19 @@ import UserPage from "./pages/UserPage";
 import AuthLayout from "./Components/authLayout";
 import CalendarLayout from "./pages/CalendarLayout";
 import SignInPage from "./pages/Auth/SignIn";
-
 import { ApplicationInterface, UserInterface } from "./utils/constants";
-import SignUp from "./pages/Auth/SignUp";
 import authApi from "./api/authApi";
 import SignUpPage from "./pages/Auth/SignUp";
 import Applications from "./pages/Applications";
-import { forms, OrganizationType, User } from "moduleTypes";
+import { forms, MounthState, OrganizationType, TypeWork, User } from "moduleTypes";
 import { AxiosResponse } from "axios";
 import apiForUsers from "./api/apiUserList";
 import apiApplications from "./api/apiApplications";
 import apiForOrhanization from "./api/apiOrganizationHandler";
+import apiTypesWorks from "./api/apiTypeWork";
 
 export const tasksAtom = atom([]);
-
-type MounthState = {
-  mounth: React.ComponentState;
-  setMounth: React.ComponentState;
-};
-
+export const typesWork = atom<TypeWork[]>([]);
 export const Mounth = createContext<MounthState | null>(null);
 export const YearAtom = atom<number>(new Date().getFullYear());
 export const userAtom = atom(UserInterface);
@@ -49,9 +43,10 @@ export const queryClient = new QueryClient({
 
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useAtom(logInAtom);
-  const [organizationsDataBase, setOrganizationsDataBase] =
+  const [, setOrganizationsDataBase] =
     useAtom<OrganizationType[]>(organizations);
-  const [usersDataBase, setUsersDataBase] = useAtom<User[]>(users);
+  const [, setTypesWork] = useAtom<TypeWork[]>(typesWork);
+  const [, setUsersDataBase] = useAtom<User[]>(users);
   const [, setUserInfo] = useAtom(userAtom);
   const navigate = useNavigate();
 
@@ -64,6 +59,7 @@ export default function App() {
             setIsLoggedIn(true);
             setUserInfo(response.data);
             navigate("user_page");
+
           }
         })
         .catch(() => {
@@ -101,7 +97,8 @@ export default function App() {
       })
       .catch((err) => console.error(err));
 
-      apiApplications.get()
+    apiApplications.get();
+    apiTypesWorks.get().then((res)=>setTypesWork(res.data))
   }, []);
 
   return (

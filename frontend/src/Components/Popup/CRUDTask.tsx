@@ -138,7 +138,7 @@ export const CRUDTask: React.FC<CRUDTaskProps> = (props) => {
                 </ListItem>
                 <ListItem>
                   <TextAreaMUI
-                    placeholder="Enter venue"
+                    placeholder="Enter place"
                     minRows={1}
                     options={"100%"}
                     onChange={props.setPlaceExecutionTask}

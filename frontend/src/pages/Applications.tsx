@@ -6,9 +6,11 @@ import apiApplications from "../api/apiApplications";
 import { ApplicationDataBase, forms } from "moduleTypes";
 import { ApplicationInterface } from "../utils/constants";
 import { Grid } from "@mui/material";
+import ClickableChips from "../Components/ChipActions";
 
 const Applications: React.FC = () => {
   const [openForms, setOpenForms] = useState<boolean>(false);
+  const [pageState, setPageState] = useState<boolean>(false);
   const [valuesForms, setValuesForms] = useState<forms>(ApplicationInterface);
   const [applicationsDataBase, setApplicationsDataBase] = useState<any>([]);
   useEffect(() => {
@@ -24,6 +26,7 @@ const Applications: React.FC = () => {
   }, []);
   return (
     <>
+    <ClickableChips pageState={pageState} setPageState={setPageState}/>
     <Grid container spacing={8} style={{margin:"50px"}}>
       {applicationsDataBase.map((data:ApplicationDataBase) => 
         <RecipeReviewCard card={data}/>

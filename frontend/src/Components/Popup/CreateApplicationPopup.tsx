@@ -15,17 +15,20 @@ import BasicSelect from "../Inputs/SelectMUI";
 import { ApplicationInterface } from "../../utils/constants";
 import { CreateApplicationPopupProps, forms } from "moduleTypes";
 import apiApplications from "../../api/apiApplications";
+import MultipleSelectChip from "../Inputs/ChipSelectMUI";
+import SelectTypeWork from "../Inputs/SelectTypeWork";
 
 const CreateApplicationPopup: React.FC<CreateApplicationPopupProps> = ({
   open,
   onClose,
   formValues,
-  setValuesForms
+  setValuesForms,
 }) => {
   const [organizationsDataBase] = useAtom(organizations);
   const [usersDataBase] = useAtom(users);
   const [user] = useAtom(userAtom);
   const [organization, setOrganization] = useState<number>();
+  const [listTypesWorks, setListTypesWorks] = useState<number[]>([]);
   const [userForm, setUserForm] = useState<number>();
   const handleChange = (
     e: ChangeEvent<
@@ -35,12 +38,12 @@ const CreateApplicationPopup: React.FC<CreateApplicationPopupProps> = ({
     const { name, value } = e.target;
     setValuesForms({ ...formValues, [name as string]: value as string });
   };
-   console.log(user.id)
   const handleSubmit = () => {
     formValues.organization_id = organization;
     formValues.responsiblePerson_id = userForm;
     formValues.createdUser_id = user.id;
-   apiApplications.create(formValues);
+    formValues.types_works_ids = listTypesWorks;
+    apiApplications.create(formValues);
     onClose();
   };
 
@@ -50,7 +53,7 @@ const CreateApplicationPopup: React.FC<CreateApplicationPopupProps> = ({
       <DialogContent>
         <Box
           component="form"
-          sx={{"& .MuiTextField-root": { m: 1, width: "100%" }}}
+          sx={{ "& .MuiTextField-root": { m: 1, width: "100%" } }}
           noValidate
           autoComplete="off"
         >
@@ -104,6 +107,10 @@ const CreateApplicationPopup: React.FC<CreateApplicationPopupProps> = ({
             inputProps={{
               maxLength: 11,
             }}
+          />
+          <SelectTypeWork
+            listTypesWorks={listTypesWorks}
+            setListTypesWorks={setListTypesWorks}
           />
           <FormControl fullWidth sx={{ m: 1 }}>
             <BasicSelect
