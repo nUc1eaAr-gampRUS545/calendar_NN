@@ -5,5 +5,6 @@ const apiApplications = {
   get: () => apiAxoisInstance.get(`/applications/`),
   delete: (id: number, ) => apiAxoisInstance.delete(`/applications/${id}/`), 
   update: (id: number, ) => apiAxoisInstance.patch(`/applications/${id}/`),
+  
 };
 export default apiApplications;

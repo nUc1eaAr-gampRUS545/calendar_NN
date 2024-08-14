@@ -8,11 +8,12 @@ import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import Chip from "@mui/material/Chip";
 import { Dispatch, SetStateAction } from "react";
-import { User } from "moduleTypes";
+import { IPlaceLMK, User } from "moduleTypes";
 
 interface MultipleSelectChipProps {
-  users: User[];
-  setExecutors: Dispatch<SetStateAction<string[]>>;
+  attributs:User[],
+  setAttributs: Dispatch<SetStateAction<string[]>>;
+
 }
 
 const ITEM_HEIGHT = 48;
@@ -36,8 +37,7 @@ function getStyles(name: string, personName: readonly string[], theme: Theme) {
 }
 
 const MultipleSelectChip: React.FC<MultipleSelectChipProps> = ({
-  users,
-  setExecutors,
+  attributs,setAttributs
 }) => {
   const theme = useTheme();
   const [personName, setPersonName] = React.useState<string[]>([]);
@@ -48,7 +48,7 @@ const MultipleSelectChip: React.FC<MultipleSelectChipProps> = ({
     } = event;
     const valueArray = typeof value === "string" ? value.split(",") : value;
     setPersonName(valueArray);
-    setExecutors(valueArray);
+    setAttributs(valueArray);
   };
   return (
     <div>
@@ -70,13 +70,13 @@ const MultipleSelectChip: React.FC<MultipleSelectChipProps> = ({
           )}
           MenuProps={MenuProps}
         >
-          {users.map((user) => (
+          {attributs.map((atribut) => (
             <MenuItem
-              key={user.email}
-              value={user.id}
-              style={getStyles(user.name, personName, theme)}
+              key={atribut.email}
+              value={atribut.id}
+              style={getStyles(atribut.name, personName, theme)}
             >
-              {`${user.name} ${user.surname}`}
+              {`${atribut.name} ${atribut.surname}`}
             </MenuItem>
           ))}
         </Select>

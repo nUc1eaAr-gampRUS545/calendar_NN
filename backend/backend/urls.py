@@ -6,6 +6,7 @@ from Tasks import routesTasks
 from Organization import routesOrg
 from TypesWork import routesTypesWork
 from Files import routesFile
+from Places import routesPlaces
 from backend import settings
 from django.conf.urls.static import static
 from Applications import routesApplications
@@ -19,7 +20,7 @@ urlpatterns = [
     path('api/v1/files/',include(routesFile)),
     path('api/v1/types-work/',include(routesTypesWork)),
     path('api/v1/applications/',include(routesApplications)),
-
+    path('api/v1/places/',include(routesPlaces)),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

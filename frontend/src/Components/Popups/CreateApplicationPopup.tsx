@@ -12,11 +12,10 @@ import {
 import { organizations, userAtom, users } from "../../App";
 import { useAtom } from "jotai";
 import BasicSelect from "../Inputs/SelectMUI";
-import { ApplicationInterface } from "../../utils/constants";
-import { CreateApplicationPopupProps, forms } from "moduleTypes";
+import { CreateApplicationPopupProps } from "moduleTypes";
 import apiApplications from "../../api/apiApplications";
-import MultipleSelectChip from "../Inputs/ChipSelectMUI";
 import SelectTypeWork from "../Inputs/SelectTypeWork";
+import PlaceFilterPopup from "./PlaceFilterPopup";
 
 const CreateApplicationPopup: React.FC<CreateApplicationPopupProps> = ({
   open,
@@ -26,6 +25,7 @@ const CreateApplicationPopup: React.FC<CreateApplicationPopupProps> = ({
 }) => {
   const [organizationsDataBase] = useAtom(organizations);
   const [usersDataBase] = useAtom(users);
+  const [placeFilterPopup, setPlaceFilterPopup] = useState(false);
   const [user] = useAtom(userAtom);
   const [organization, setOrganization] = useState<number>();
   const [listTypesWorks, setListTypesWorks] = useState<number[]>([]);
@@ -77,6 +77,7 @@ const CreateApplicationPopup: React.FC<CreateApplicationPopupProps> = ({
             name="place"
             value={formValues.place}
             onChange={handleChange}
+            onClick={() => setPlaceFilterPopup(true)}
           />
           <TextField
             label="Start Date"
@@ -112,6 +113,7 @@ const CreateApplicationPopup: React.FC<CreateApplicationPopupProps> = ({
             listTypesWorks={listTypesWorks}
             setListTypesWorks={setListTypesWorks}
           />
+
           <FormControl fullWidth sx={{ m: 1 }}>
             <BasicSelect
               attributs={usersDataBase}
@@ -126,8 +128,21 @@ const CreateApplicationPopup: React.FC<CreateApplicationPopupProps> = ({
               placeholder={"Organization"}
             />
           </FormControl>
+          <FormControl>
+            <PlaceFilterPopup
+              open={placeFilterPopup}
+              onClose={() => setPlaceFilterPopup(false)}
+              onFilter={function (filters: {
+                frame: string;
+                zone: string;
+              }): void {
+                throw new Error("Function not implemented.");
+              }}
+            />
+          </FormControl>
         </Box>
       </DialogContent>
+
       <DialogActions>
         <Button onClick={onClose}>Cancel</Button>
         <Button onClick={handleSubmit}>Create</Button>

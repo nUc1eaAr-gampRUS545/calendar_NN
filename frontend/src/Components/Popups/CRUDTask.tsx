@@ -147,8 +147,8 @@ export const CRUDTask: React.FC<CRUDTaskProps> = (props) => {
                 </ListItem>
                 <ListItem>
                   <MultipleSelectChip
-                    users={props.userlist}
-                    setExecutors={props.setExecutors}
+                    attributs={props.userlist}
+                    setAttributs={props.setExecutors}
                   />
                   <BasicSelect
                     attributs={[

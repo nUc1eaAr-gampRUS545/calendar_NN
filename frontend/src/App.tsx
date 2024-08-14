@@ -16,19 +16,29 @@ import { ApplicationInterface, UserInterface } from "./utils/constants";
 import authApi from "./api/authApi";
 import SignUpPage from "./pages/Auth/SignUp";
 import Applications from "./pages/Applications";
-import { forms, MounthState, OrganizationType, TypeWork, User } from "moduleTypes";
+import {
+  IApplication,
+  MounthState,
+  OrganizationType,
+  ITypeWork,
+  User,
+  IPlaceLMK,
+} from "moduleTypes";
 import { AxiosResponse } from "axios";
 import apiForUsers from "./api/apiUserList";
 import apiApplications from "./api/apiApplications";
 import apiForOrhanization from "./api/apiOrganizationHandler";
 import apiTypesWorks from "./api/apiTypeWork";
+import apiGetPlaces from "./api/apiGetPlacesLMK";
 
 export const tasksAtom = atom([]);
-export const typesWork = atom<TypeWork[]>([]);
+export const typesWork = atom<ITypeWork[]>([]);
+
+export const placesLMK = atom<IPlaceLMK[]>([]);
 export const Mounth = createContext<MounthState | null>(null);
 export const YearAtom = atom<number>(new Date().getFullYear());
 export const userAtom = atom(UserInterface);
-export const applications = atom<forms[]>([]);
+export const applications = atom<IApplication[]>([]);
 export const organizations = atom<OrganizationType[]>([]);
 export const users = atom<User[]>([]);
 export const logInAtom = atom<boolean>(false);
@@ -45,8 +55,9 @@ export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useAtom(logInAtom);
   const [, setOrganizationsDataBase] =
     useAtom<OrganizationType[]>(organizations);
-  const [, setTypesWork] = useAtom<TypeWork[]>(typesWork);
+  const [, setTypesWork] = useAtom<ITypeWork[]>(typesWork);
   const [, setUsersDataBase] = useAtom<User[]>(users);
+  const [, setPlaces] = useAtom(placesLMK);
   const [, setUserInfo] = useAtom(userAtom);
   const navigate = useNavigate();
 
@@ -59,7 +70,6 @@ export default function App() {
             setIsLoggedIn(true);
             setUserInfo(response.data);
             navigate("user_page");
-
           }
         })
         .catch(() => {
@@ -96,9 +106,12 @@ export default function App() {
         }
       })
       .catch((err) => console.error(err));
-
+    apiGetPlaces
+      .get()
+      .then((res) => setPlaces(res.data))
+      .catch((err) => console.error(err));
     apiApplications.get();
-    apiTypesWorks.get().then((res)=>setTypesWork(res.data))
+    apiTypesWorks.get().then((res) => setTypesWork(res.data[0]));
   }, []);
 
   return (
@@ -107,11 +120,7 @@ export default function App() {
         path="/"
         element={
           <QueryClientProvider client={queryClient}>
-            <div className="mainPageWrapper">
-              {/* <EmployeeList /> */}
-              {/* <DatePicker /> */}
-              {/* <PopupTascButton/>  */}
-            </div>
+            <div className="mainPageWrapper"></div>
             <AppLayout />
           </QueryClientProvider>
         }

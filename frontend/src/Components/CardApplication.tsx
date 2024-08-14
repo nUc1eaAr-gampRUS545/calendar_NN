@@ -13,12 +13,20 @@ import ShareIcon from "@mui/icons-material/Share";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { useEffect, useState } from "react";
-import { ApplicationDataBase, OrganizationType, TypeWork, User } from "moduleTypes";
+import {
+  ApplicationDataBase,
+  OrganizationType,
+  ITypeWork,
+  User,
+} from "moduleTypes";
 import apiForUsers from "../api/apiUserList";
 import stringToColor from "../helpers/colorIconUser";
 import convertToReadableDate from "../helpers/convertToReadableDate";
 import apiForOrhanization from "../api/apiOrganizationHandler";
 import apiTypesWorks from "../api/apiTypeWork";
+import { userAtom } from "../App";
+import { useAtom } from "jotai";
+import { Button } from "@mui/joy";
 
 interface RecipeReviewCardProps {
   card: ApplicationDataBase;
@@ -30,7 +38,7 @@ interface ExpandMoreProps extends IconButtonProps {
 
 const ExpandMore = styled((props: ExpandMoreProps) => {
   const { expand, ...other } = props;
-  
+
   return <IconButton {...other} />;
 })(({ theme, expand }) => ({
   transform: !expand ? "rotate(0deg)" : "rotate(180deg)",
@@ -41,7 +49,8 @@ const ExpandMore = styled((props: ExpandMoreProps) => {
 }));
 
 const RecipeReviewCard: React.FC<RecipeReviewCardProps> = ({ card }) => {
-  const [specialTypesWork, setSpecialTypesWork] = useState<TypeWork[]>([]);
+  const [user] = useAtom(userAtom);
+  const [specialTypesWork, setSpecialTypesWork] = useState<ITypeWork[]>([]);
   const [expanded, setExpanded] = useState(false);
   const [createdUserInfo, setCreatedUserInfo] = useState<User | null>(null);
   const [responsibleRersonInfo, setResponsibleRersonInfo] =
@@ -60,10 +69,13 @@ const RecipeReviewCard: React.FC<RecipeReviewCardProps> = ({ card }) => {
   };
   const getCreatedUserAndResponsPerson = () => {
     Promise.all([
-      apiForUsers.getUser(card.createdUser_id).then((res) => setCreatedUserInfo(res.data)),
-      apiForUsers.getUser(card.responsiblePerson_id).then((res) => setResponsibleRersonInfo(res.data)),
-    ])
-    .catch((err) => console.error(err));
+      apiForUsers
+        .getUser(card.createdUser_id)
+        .then((res) => setCreatedUserInfo(res.data)),
+      apiForUsers
+        .getUser(card.responsiblePerson_id)
+        .then((res) => setResponsibleRersonInfo(res.data)),
+    ]).catch((err) => console.error(err));
   };
 
   useEffect(() => {
@@ -76,24 +88,23 @@ const RecipeReviewCard: React.FC<RecipeReviewCardProps> = ({ card }) => {
       .getOrg(card.organization_id)
       .then((res) => setOrganizationInfo(res.data))
       .catch((err) => console.error(err));
-   
   }, [card]);
 
   useEffect(() => {
-    apiTypesWorks.post(card.types_works_ids) // Оберните IDs в объект
+    apiTypesWorks
+      .post(card.types_works_ids) // Оберните IDs в объект
       .then((info) => {
         setSpecialTypesWork(info.data); // Сохраните в состояние
       })
       .catch((err) => console.error(err));
   }, [card.types_works_ids]);
-  
-console.log(specialTypesWork ? specialTypesWork.map((data)=>data):"")
+
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
 
   return (
-    <Card sx={{ maxWidth: 345, margin: 2 }}>
+    <Card sx={{ maxWidth: 345, margin: 2 , backgroundColor:user.id == card.responsiblePerson_id ? red[200] : "whitesmoke"} } >
       <CardHeader
         avatar={
           <Avatar
@@ -134,12 +145,7 @@ console.log(specialTypesWork ? specialTypesWork.map((data)=>data):"")
         </Typography>
       </CardContent>
       <CardActions disableSpacing>
-        <IconButton aria-label="add to favorites">
-          <FavoriteIcon />
-        </IconButton>
-        <IconButton aria-label="share">
-          <ShareIcon />
-        </IconButton>
+        
         <ExpandMore
           expand={expanded}
           onClick={handleExpandClick}
@@ -163,14 +169,14 @@ console.log(specialTypesWork ? specialTypesWork.map((data)=>data):"")
               card.start_date
             )} - ${convertToReadableDate(card.due_date)}`}
           </Typography>
-          <Typography variant="body1" >
-          <strong>Типы работ:</strong>
-        </Typography>
-        {specialTypesWork.map(type => (
-          <Typography key={type.id} variant="body2" color="text.secondary">
-            - {type.description}
+          <Typography variant="body1">
+            <strong>Типы работ:</strong>
           </Typography>
-        ))}
+          {specialTypesWork.map((type) => (
+            <Typography key={type.id} variant="body2" color="text.secondary">
+              - {type.description}
+            </Typography>
+          ))}
           <Typography variant="body1" color="text.primary">
             <strong>Наименование объекта/площадки:</strong>
           </Typography>
@@ -181,6 +187,7 @@ console.log(specialTypesWork ? specialTypesWork.map((data)=>data):"")
           <Typography variant="body1" color="text.primary">
             <strong>Контактный телефон:</strong> {card.tell}
           </Typography>
+          <Button >Утвердить вход</Button>
         </CardContent>
       </Collapse>
     </Card>

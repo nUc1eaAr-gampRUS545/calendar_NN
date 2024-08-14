@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'authentication',
     'Users.apps.UsersConfig',
+    'Places.apps.PlacesConfig',
     'Tasks.apps.TasksConfig',
     'Files.apps.FilesConfig',
     'TypesWork.apps.TypesworkConfig',

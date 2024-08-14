@@ -31,7 +31,7 @@ export const ApplicationInterface = {
   start_date: DATE_NOW,
   due_date: DATE_NOW,
   phone: "",
-  types_works_ids:[],
+  types_works_ids: [],
   responsiblePerson_id: 0,
   organization_id: 0,
 };
@@ -84,4 +84,8 @@ export const typesWorks = [
 установок, тепловых сетей и оборудования и др.`,
   `Работы с применением подъемника`,
   `Работы на высоте более 1,8 м от пола без инвентарных лесов и
-подмостей`];
+подмостей`,
+];
+export const TYPES_FRAMES_PLACES:string[]= ["ALL","Basement","1st floor","2st floor",
+  "ENGINEERING BUILDING","CHEMICAL STORAGE","COOLING STATION","PUMP STATION","BOILER HOUSE"];
+export const ZONES_PLACES:string[] = ["UNC","CNC","ALL","B","C","D"];

@@ -41,6 +41,6 @@ class TypeWorkSpecialList(APIView):
             return Response({"error": "type_ids должно быть списком"}, status=status.HTTP_400_BAD_REQUEST)
 
         types = TypeWorkModel.objects.filter(id__in=type_ids) 
-        serializer = {"data":TypeWorkSerializer(types, many=True) }
-        return Response(serializer.data, status=status.HTTP_200_OK)  
+        serializer = {"data":TypeWorkSerializer(types, many=True).data }
+        return Response(serializer, status=status.HTTP_200_OK)  
     

@@ -38,7 +38,7 @@ interface SelectTypeWorkProps {
 const SelectTypeWork: React.FC<SelectTypeWorkProps> = ({ setListTypesWorks, listTypesWorks }) => {
   const theme = useTheme();
   const [types] = useAtom(typesWork);
-  
+
   const handleChange = (event: SelectChangeEvent<number[]>) => {
     const {
       target: { value },
@@ -46,8 +46,12 @@ const SelectTypeWork: React.FC<SelectTypeWorkProps> = ({ setListTypesWorks, list
 
     const valueArray = typeof value === "string" ? value.split(",").map(Number) : value;
     setListTypesWorks(valueArray);
-    console.log(value)
+    console.log(value);
   };
+
+  if (!Array.isArray(types)) {
+    return null; // or handle it with a loading spinner or error message
+  }
 
   return (
     <FormControl sx={{ m: 0, width: "100%", marginLeft: 1 }}>
@@ -62,7 +66,7 @@ const SelectTypeWork: React.FC<SelectTypeWorkProps> = ({ setListTypesWorks, list
         renderValue={(selected) => (
           <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
             {selected.map((value) => (
-              <Chip key={value} label={types.find(type => type.id === value)?.description || value} />
+              <Chip key={value} label={types.find((type) => type.id === value)?.description || value} />
             ))}
           </Box>
         )}
@@ -71,7 +75,7 @@ const SelectTypeWork: React.FC<SelectTypeWorkProps> = ({ setListTypesWorks, list
         {types.map((type) => (
           <MenuItem 
             key={type.id} 
-            value={type.id} // Используем id как значение
+            value={type.id} 
             style={getStyles(type.description, listTypesWorks.map(String), theme)}
           >
             {type.description}

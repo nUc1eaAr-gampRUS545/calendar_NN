@@ -30,7 +30,7 @@ declare module "moduleTypes" {
     importance: string;
     description: string | underfind;
   }
-  type forms = {
+  type IApplication = {
     types_works_ids: number[];
     name: string;
     surname: string;
@@ -82,11 +82,19 @@ declare module "moduleTypes" {
     [key: string]: any;
   }
 
-  interface TypeWork {
+  interface ITypeWork {
     id: number;
     description: string;
   }
-  
+  interface IPlaceLMK {
+    id:number,
+    frame:string | null,
+    name:string | null,
+    quntity:number | null,
+    room_number: string | null,
+    type_of_place:string | null,
+    zone: string | null, 
+  }
   interface CRUDTaskProps {
     setExecutors: Dispatch<SetStateAction<number[]>>;
     setPlaceExecutionTask: Dispatch<SetStateAction<string>>;
