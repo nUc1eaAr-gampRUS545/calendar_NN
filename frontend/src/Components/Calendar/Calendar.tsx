@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Calendar, dateFnsLocalizer } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import { Box, FormControl, Select, MenuItem, Typography, Modal } from "@mui/material";
+import { Box, Typography, Modal } from "@mui/material";
 import "react-datepicker/dist/react-datepicker.css";
 import { useAtom } from "jotai";
 import { useParams } from "react-router-dom";
@@ -9,9 +9,8 @@ import { tasksAtom, userAtom, users } from "../../App";
 import taskApi from "../../api/apiTaskHendler";
 import { AxiosResponse } from "axios";
 import { style } from "../../utils/style";
-import { HandleDatasProps, Task, User } from "moduleTypes";
+import { HandleDatasProps, ITaskDataBase , IUser } from "moduleTypes";
 import { CRUDTask } from "../Popups/CRUDTask";
-import apiForUsers from "../../api/apiUserList";
 import { eventPropGetter } from "../../helpers/eventPropGetter";
 import { updateEventsCalendar } from "../../helpers/updateEventsCalendar";
 import { localizer } from "../../helpers/localizer";
@@ -20,7 +19,7 @@ const BigCalendar: React.FC = () => {
   const [tasks, setTasks] = useAtom(tasksAtom);
   const { employeeId } = useParams<{ employeeId: string }>();
   const [user] = useAtom(userAtom);
-  const [userlist] = useAtom<User[]>(users);
+  const [userlist] = useAtom<IUser[]>(users);
   const [selectUserID, setSelectUserID] = useState<number>(user.id);
   const [data, setData] = useState<AxiosResponse<any, any>>();
   const [openDraw, setOpenDraw] = useState(false);
@@ -30,7 +29,6 @@ const BigCalendar: React.FC = () => {
   const [titleTask, setTitleTask] = useState<string>("");
   const [taskId, setIdTask] = useState<number>();
   const [open, setOpen] = useState(false);
-  const [placeExecutionTask, setPlaceExecutionTask] = useState<string>("");
   const [descriptionTask, setDescriptionTask] = useState<string>("");
   const [executors, setExecutors] = useState<number[]>([]);
   const [workStatus, setWorkStatus] = useState<string>("");
@@ -41,7 +39,6 @@ const BigCalendar: React.FC = () => {
     setOpenDraw(false);
     setEnd(null);
     setDescriptionTask("");
-    setPlaceExecutionTask("");
     setWorkStatus("");
     setStart(null);
     setIdTask(0);
@@ -75,19 +72,17 @@ const BigCalendar: React.FC = () => {
     id,
     title,
     description,
-    venue,
+    place,
     filesDataBase,
     users,
     importance,
   }: HandleDatasProps) => {
     setEnd(end);
     setDescriptionTask(description);
-    setPlaceExecutionTask(venue);
     setWorkStatus(importance);
     setStart(start);
     setIdTask(id);
     setFilesDataBase(filesDataBase);
-    setExecutors(users);
     setTitleTask(title);
     openDrawer();
     setButtonLabel("Update");
@@ -109,28 +104,9 @@ const BigCalendar: React.FC = () => {
     };
     getTasks();
   }, [selectUserID, openDraw, setTasks]);
-
-  // useEffect(() => {
-  //   getUserList();
-  // }, [employeeId, openDraw]);
-
   return (
     <Box sx={{ height: "96vh", margin: "2vh" }}>
-      {/* <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-        <Select
-          labelId="select-user-label"
-          id="select-user"
-          value={selectUserID}
-          onChange={() => updateSelectUserID}
-          label="Select User"
-        >
-          {userlist.map((option) => (
-            <MenuItem key={option.email} value={option.id}>
-              {option.surname}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl> */}
+  
       <Modal
         open={open}
         onClose={handleClose}
@@ -157,7 +133,7 @@ const BigCalendar: React.FC = () => {
             id,
             title,
             description,
-            venue,
+            place,
             filesDataBase,
             users,
             importance,
@@ -168,7 +144,7 @@ const BigCalendar: React.FC = () => {
               id,
               title,
               description,
-              venue,
+              place,
               filesDataBase,
               users,
               importance,
@@ -197,12 +173,11 @@ const BigCalendar: React.FC = () => {
           setEnd={setEnd}
           description={descriptionTask}
           setDescription={setDescriptionTask}
-          setPlaceExecutionTask={setPlaceExecutionTask}
           setWorkStatus={setWorkStatus}
           setExecutors={setExecutors}
           workStatus={workStatus}
           executors={executors}
-          placeExecutionTask={placeExecutionTask}
+
         />
       </Box>
     </Box>

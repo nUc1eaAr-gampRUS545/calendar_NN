@@ -30,6 +30,9 @@ const CreateApplicationPopup: React.FC<CreateApplicationPopupProps> = ({
   const [organization, setOrganization] = useState<number>();
   const [listTypesWorks, setListTypesWorks] = useState<number[]>([]);
   const [userForm, setUserForm] = useState<number>();
+  const [place, setPlace]=useState<string>('');
+  const [placeId, setPlaceId] = useState(0);
+
   const handleChange = (
     e: ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | { name?: string; value: unknown }
@@ -43,6 +46,8 @@ const CreateApplicationPopup: React.FC<CreateApplicationPopupProps> = ({
     formValues.responsiblePerson_id = userForm;
     formValues.createdUser_id = user.id;
     formValues.types_works_ids = listTypesWorks;
+    formValues.place_id = placeId;
+    
     apiApplications.create(formValues);
     onClose();
   };
@@ -75,7 +80,7 @@ const CreateApplicationPopup: React.FC<CreateApplicationPopupProps> = ({
             required
             label="Place"
             name="place"
-            value={formValues.place}
+            value={place}
             onChange={handleChange}
             onClick={() => setPlaceFilterPopup(true)}
           />
@@ -128,18 +133,15 @@ const CreateApplicationPopup: React.FC<CreateApplicationPopupProps> = ({
               placeholder={"Organization"}
             />
           </FormControl>
-          <FormControl>
+      
             <PlaceFilterPopup
               open={placeFilterPopup}
               onClose={() => setPlaceFilterPopup(false)}
-              onFilter={function (filters: {
-                frame: string;
-                zone: string;
-              }): void {
-                throw new Error("Function not implemented.");
-              }}
+              setPlaceId={setPlaceId}
+              setPlace={setPlace}
+             
             />
-          </FormControl>
+     
         </Box>
       </DialogContent>
 

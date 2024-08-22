@@ -1,12 +1,12 @@
 declare module "moduleTypes" {
   import * as React from "react";
-  type Task = {
+  interface ITaskDataBase {
     id: number;
     title: string;
     description?: string;
-    venue: string;
+    place: IPlaceLMK;
     files: number[];
-    users: number[];
+    users: IUser[];
     importance: string;
     created_at: Date;
     start_date: Date;
@@ -14,8 +14,21 @@ declare module "moduleTypes" {
     updated_at?: Date;
     is_completed?: boolean;
   };
-  interface OrganizationType {
-    surname?: string;
+  interface ITaskRequest {
+    title: string;
+    createdUser_id:number;
+    description?: string;
+    place_id: number;
+    files: number[];
+    users_ids: number[];
+    importance: string;
+    start_date: Date | null | undefined;
+    due_date: Date | null | undefined;
+    updated_at?: Date;
+    is_completed?: boolean;
+  };
+  interface IOrganization {
+    surname?:string;
     name: string;
     id: number;
   }
@@ -24,9 +37,9 @@ declare module "moduleTypes" {
     end: Date | null | undefined;
     id: number;
     title: string;
-    venue: string;
+    place: IPlaceLMK;
     filesDataBase: number[];
-    users: number[];
+    users: IUser[];
     importance: string;
     description: string | underfind;
   }
@@ -34,7 +47,7 @@ declare module "moduleTypes" {
     types_works_ids: number[];
     name: string;
     surname: string;
-    place: string;
+    place_id: number;
     start_date: Date;
     due_date: Date;
     phone: string;
@@ -63,7 +76,7 @@ declare module "moduleTypes" {
     id: number;
     token: string;
   }
-  interface User {
+  interface IUser {
     id: number;
     name: string;
     surname: string;
@@ -87,21 +100,19 @@ declare module "moduleTypes" {
     description: string;
   }
   interface IPlaceLMK {
-    id:number,
-    frame:string | null,
-    name:string | null,
-    quntity:number | null,
-    room_number: string | null,
-    type_of_place:string | null,
-    zone: string | null, 
+    id: number;
+    frame: string | null;
+    name: string | null;
+    quntity: number | null;
+    room_number: string | null;
+    type_of_place: string | null;
+    zone: string | null;
   }
   interface CRUDTaskProps {
     setExecutors: Dispatch<SetStateAction<number[]>>;
-    setPlaceExecutionTask: Dispatch<SetStateAction<string>>;
     setWorkStatus: Dispatch<SetStateAction<string>>;
     workStatus: string;
     executors: number[];
-    placeExecutionTask: string;
     taskId: number | underfind;
     setEnd(date: dayjs): void;
     setStart(date: dayjs): void;
@@ -119,18 +130,24 @@ declare module "moduleTypes" {
     description: string;
     setDescription: Dispatch<SetStateAction<string>>;
   }
-  interface ApplicationDataBase {
+  interface IApplicationDataBase {
     due_date: string;
     id: number;
     is_active: boolean;
     name: string;
     start_date: string;
     surname: string;
-    createdUser_id: number,
-    organization_id: number,
-    responsiblePerson_id: number,
-    types_works_ids:number[],
-    tell:string,
-    created_at: string
+    created_user: IUser;
+    place:IPlaceLMK;
+    organization: IOrganization;
+    responsible_person: IUser;
+    types_works: ITypeWork[];
+    tell: string;
+    created_at: string;
+    is_completed: boolean;
+    zone_owner_approval: boolean;
+    security_approval: boolean;
+    contractor_supervisor_approval: boolean;
+    briefings:number[]
   }
 }

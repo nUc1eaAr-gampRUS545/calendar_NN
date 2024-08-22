@@ -1,10 +1,10 @@
-import { Task } from "moduleTypes";
+import { ITaskDataBase  } from "moduleTypes";
 
-export const updateEventsCalendar = (tasks:Task[])=>{
-    return tasks.map((task: Task) => ({
+export const updateEventsCalendar = (tasks:ITaskDataBase[])=>{
+    return tasks.map((task: ITaskDataBase ) => ({
       title: task.title,
       description: task.description,
-      venue: task.venue,
+      place: task.place,
       filesDataBase: task.files,
       users: task.users,
       importance: task.importance,

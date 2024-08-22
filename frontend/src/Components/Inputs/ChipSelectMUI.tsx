@@ -8,10 +8,10 @@ import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import Chip from "@mui/material/Chip";
 import { Dispatch, SetStateAction } from "react";
-import { IPlaceLMK, User } from "moduleTypes";
+import { IPlaceLMK, IUser } from "moduleTypes";
 
 interface MultipleSelectChipProps {
-  attributs:User[],
+  attributs:IUser[],
   setAttributs: Dispatch<SetStateAction<string[]>>;
 
 }

@@ -1,17 +1,15 @@
 from django.utils import timezone
 from rest_framework import serializers
+
+from Users.serializer import UserSerializer
+from Places.serializers import PlaceSerializer
 from .models import Task
 
 class TaskSerializer(serializers.ModelSerializer):
-    # title = serializers.CharField(max_length=128, write_only=True)
-    # description = serializers.CharField(max_length=128, write_only=True)
-    # is_completed = serializers.BooleanField(default=False)
-    # created_at = serializers.DateTimeField(default=timezone.now)
-    # updated_at = serializers.DateTimeField(auto_now=True)
-    # due_date = serializers.DateTimeField(null=True, blank=True)
-    # user = serializers.CharField(max_length=128, write_only=True)
-
+    users = UserSerializer(many=True, read_only=True, source='users_ids')
+    place = PlaceSerializer(read_only=True, source='place_id')
+    
     class Meta:
         model = Task
-        fields = ['description', 'due_date','start_date', 'files', 'id', 'importance', 'is_completed', 'title','updated_at', 'users', 'venue']
+        fields = ['users','description', 'due_date','start_date', 'files', 'id', 'importance', 'is_completed', 'title','updated_at', 'place']
         read_only_fields = ['created_at']

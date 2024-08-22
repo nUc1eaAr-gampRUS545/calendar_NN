@@ -1,6 +1,6 @@
 import { Box, Button, Drawer, List, ListItem } from "@mui/material";
 import { Form, Formik } from "formik";
-import { CRUDTaskProps, Task } from "moduleTypes";
+import { CRUDTaskProps, ITaskDataBase, ITaskRequest } from "moduleTypes";
 import { useState } from "react";
 import DatePicker from "react-datepicker";
 import TextAreaMUI from "../Inputs/TextAreaMUI";
@@ -13,13 +13,16 @@ import { tasksAtom } from "../../App";
 import { useAtom } from "jotai";
 import Contact from "../Inputs/UploadFile";
 import { uploadFileApi } from "../../api/apiFileHand";
-// import { AxiosResponse } from "axios";
 import { FileDisplay } from "../FileDisplay";
+import PlaceFilterPopup from "./PlaceFilterPopup";
 
 export const CRUDTask: React.FC<CRUDTaskProps> = (props) => {
-  const [, setTasks] = useAtom(tasksAtom);
+  const [, setTasks] = useAtom<ITaskDataBase[]>(tasksAtom);
   const [isDragActive, setIsDragActive] = useState<boolean>(false);
   const [filesID, setFilesID] = useState<number[]>([]);
+  const [place, setPlace] = useState<string>('');
+  const [placeId,setPlaceId] = useState(0);
+  const [openPlaceFilter, setOpenPlaceFilter] = useState<boolean>(false)
   const [files, setFiles] = useState<File[] | undefined>([]);
 
   const postFiles = () => {
@@ -29,11 +32,10 @@ export const CRUDTask: React.FC<CRUDTaskProps> = (props) => {
           await uploadFileApi(file)
             .then((res) => {
               setFilesID((state) => [...state, res.data.data.id]);
-           
             })
             .catch((err) => console.error(err))
       );
-      setFiles([])
+      setFiles([]);
     } else {
       return null;
     }
@@ -42,15 +44,16 @@ export const CRUDTask: React.FC<CRUDTaskProps> = (props) => {
   const CreateTask = (employeeId: number) => {
     postFiles();
     taskApi.create({
-      employeeId,
+      createdUser_id: employeeId,
       title: props.titleTask,
       description: props.description,
       start_date: props.startTask,
-      venue: props.placeExecutionTask,
+      place_id: placeId,
       files: filesID,
-      users: props.executors,
+      users_ids: props.executors,
       importance: props.workStatus,
       due_date: props.endTask,
+   
     });
     setFiles([]);
     props.closeDrawer();
@@ -79,9 +82,8 @@ export const CRUDTask: React.FC<CRUDTaskProps> = (props) => {
       if (props.taskId) {
         await taskApi.delete(props.selectUserID, props.taskId);
         setTasks((prevTasks: any) =>
-          prevTasks.filter((task: Task) => task.id !== props.taskId)
+          prevTasks.filter((task: ITaskDataBase) => task.id !== props.taskId)
         );
-        
       }
       props.closeDrawer();
     } catch (err) {
@@ -139,10 +141,11 @@ export const CRUDTask: React.FC<CRUDTaskProps> = (props) => {
                 <ListItem>
                   <TextAreaMUI
                     placeholder="Enter place"
+                    key={placeId}
                     minRows={1}
                     options={"100%"}
-                    onChange={props.setPlaceExecutionTask}
-                    value={props.placeExecutionTask}
+                    onChange ={() => setOpenPlaceFilter(true)}
+                    value={place}
                   />
                 </ListItem>
                 <ListItem>
@@ -168,7 +171,7 @@ export const CRUDTask: React.FC<CRUDTaskProps> = (props) => {
                   />
                 </ListItem>
                 <ListItem sx={{ mt: "0vw", mr: "10vw" }}>
-                {files != undefined && files.length != 0 && (
+                  {files != undefined && files.length != 0 && (
                     <Button
                       variant="contained"
                       sx={{ m: "3px 30px 0px 3px" }}
@@ -201,6 +204,12 @@ export const CRUDTask: React.FC<CRUDTaskProps> = (props) => {
                   <FileDisplay filesDataBase={props.filesDataBase} />
                 </ListItem>
               </List>
+              <PlaceFilterPopup
+                open={openPlaceFilter}
+                onClose={() => setOpenPlaceFilter(false)}
+                setPlaceId={setPlaceId}
+                setPlace={setPlace}
+              />
             </Form>
           )}
         </Formik>

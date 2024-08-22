@@ -15,3 +15,13 @@ class PlaceListView(APIView):
         except PlaceModel.DoesNotExist:
             return Response({"detail": "404 not found"}, status=status.HTTP_404_NOT_FOUND)
             
+
+class PlaceGetAPIView(APIView):
+        def get(self, request, pk, *args, **kwargs):
+            try:
+               place_instance = PlaceModel.objects.get(id=pk)
+               serializer = PlaceSerializer(place_instance)
+               place_data = {"data": serializer.data}
+               return Response(place_data, status=status.HTTP_200_OK)
+            except PlaceModel.DoesNotExist:
+               return Response({"detail": "User not found"}, status=status.HTTP_404_NOT_FOUND)

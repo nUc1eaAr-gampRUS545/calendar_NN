@@ -7,13 +7,15 @@ from .serializer import TaskSerializer
 class TaskListCreateView(generics.ListCreateAPIView):
     serializer_class = TaskSerializer
     permission_classes = [permissions.IsAuthenticated]
-
+    
     def get_queryset(self):
-        return Task.objects.filter(users=self.request.user)
+        return Task.objects.filter(users_ids=self.request.user).select_related(
+            'place_id'
+        ).prefetch_related('users_ids')
 
     def perform_create(self, serializer):
         serializer.save()
-        serializer.instance.users.add(self.request.user)
+        serializer.instance.users_ids.add(self.request.user)
 
 
 class TaskDetailView(generics.RetrieveUpdateDestroyAPIView):
@@ -21,7 +23,7 @@ class TaskDetailView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        return Task.objects.filter(users=self.request.user)
+        return Task.objects.filter(users_ids=self.request.user)
     
 class TaskDeleteView(generics.DestroyAPIView):
     queryset = Task.objects.all()

@@ -12,7 +12,7 @@ import authApi from "../../api/authApi";
 import BasicSelect from "../../Components/Inputs/SelectMUI";
 import { AxiosResponse } from "axios";
 
-import { OrganizationType } from "moduleTypes";
+import { IOrganization } from "moduleTypes";
 import PositionedSnackbar from "../../Components/Popups/MessagePopup";
 import { organizations } from "../../App";
 import { useAtom } from "jotai";

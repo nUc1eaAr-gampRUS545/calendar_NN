@@ -4,7 +4,7 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
-import { BasicSelectProps, OrganizationType } from "moduleTypes";
+import { BasicSelectProps, IOrganization } from "moduleTypes";
 import { useState } from "react";
 
 const BasicSelect: React.FC<BasicSelectProps> = ({
@@ -35,7 +35,7 @@ const BasicSelect: React.FC<BasicSelectProps> = ({
           onChange={handleChange}
         >
           {attributs.map(
-            (data: OrganizationType | string, index: number) => {
+            (data: IOrganization | string, index: number) => {
               if (typeof data === "string") {
                 return (
                   <MenuItem key={index} value={data}>

@@ -4,5 +4,5 @@ from .models import TypeWorkModel
 
 class TypeWorkSerializer(serializers.ModelSerializer):
     class Meta:
-        model = TypeWorkModel
-        fields = ['id','description']
+        model = TypeWorkModel 
+        fields = '__all__'

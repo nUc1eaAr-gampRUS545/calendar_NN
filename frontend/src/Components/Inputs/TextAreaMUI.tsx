@@ -1,5 +1,5 @@
 import Textarea from "@mui/joy/Textarea";
-import React, { Dispatch, SetStateAction } from "react";
+import React, { Dispatch, InputHTMLAttributes, SetStateAction } from "react";
 
 interface TextAreaMUIProps {
   placeholder: string;
@@ -20,9 +20,7 @@ const TextAreaMUI: React.FC<TextAreaMUIProps> = ({
     <Textarea
       sx={{ width: options ? options : "50%", marginRight: 3 }}
       minRows={minRows}
-      onInput={(e: React.ChangeEvent<HTMLInputElement>) =>
-        onChange(e.target.value)
-      }
+      onClick={onChange}
       size="lg"
       value={value !== undefined ? value : ""}
       variant="soft"

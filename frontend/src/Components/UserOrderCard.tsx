@@ -1,8 +1,8 @@
 import React from "react";
 import { Card, CardContent, Typography, Avatar, Grid } from "@mui/material";
-import { User } from "moduleTypes";
+import { IUser } from "moduleTypes";
 interface UserCardProps {
-  user: User;
+  user: IUser;
 }
 const UserCard: React.FC<UserCardProps> = ({ user }) => {
   return (

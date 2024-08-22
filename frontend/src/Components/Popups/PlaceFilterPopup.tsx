@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useState } from "react";
+import React, { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -19,13 +19,15 @@ import { TYPES_FRAMES_PLACES, ZONES_PLACES } from "../../utils/constants";
 interface PlaceFilterPopupProps {
   open: boolean;
   onClose:  (value: React.SetStateAction<boolean>) => void;
-  onFilter: (filters: { frame: string; zone: string }) => void;
+  setPlaceId: React.Dispatch<React.SetStateAction<number>>,
+  setPlace: React.Dispatch<React.SetStateAction<string>>,
 }
 
 const PlaceFilterPopup: React.FC<PlaceFilterPopupProps> = ({
   open,
   onClose,
-  onFilter,
+  setPlaceId,
+  setPlace
 }) => {
   const [places] = useAtom(placesLMK);
   const [filters, setFilters] = useState({
@@ -42,7 +44,6 @@ const PlaceFilterPopup: React.FC<PlaceFilterPopupProps> = ({
   };
 
   const handleSubmit = () => {
-    onFilter(filters);
     onClose(false);
   };
 
@@ -81,7 +82,7 @@ const PlaceFilterPopup: React.FC<PlaceFilterPopupProps> = ({
             onChange={handleChange}
           >
             {ZONES_PLACES.map((data) => (
-              <MenuItem key={data} value={data}>
+              <MenuItem key={data} value={data}> 
                 {data}
               </MenuItem>
             ))}
@@ -91,9 +92,8 @@ const PlaceFilterPopup: React.FC<PlaceFilterPopupProps> = ({
         <FormControl fullWidth margin="normal">
           <SelectPlace
             attributs={filteredPlaces}
-            setAttribut={function (value: any): void {
-              throw new Error("Function not implemented.");
-            }}
+            setAttribut={setPlaceId}
+            setPlace={setPlace}
             placeholder="Places in LMK"
           />
         </FormControl>

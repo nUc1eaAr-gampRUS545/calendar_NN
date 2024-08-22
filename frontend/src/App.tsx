@@ -19,10 +19,11 @@ import Applications from "./pages/Applications";
 import {
   IApplication,
   MounthState,
-  OrganizationType,
+  IOrganization,
   ITypeWork,
-  User,
+  IUser,
   IPlaceLMK,
+  ITaskDataBase ,
 } from "moduleTypes";
 import { AxiosResponse } from "axios";
 import apiForUsers from "./api/apiUserList";
@@ -31,7 +32,7 @@ import apiForOrhanization from "./api/apiOrganizationHandler";
 import apiTypesWorks from "./api/apiTypeWork";
 import apiGetPlaces from "./api/apiGetPlacesLMK";
 
-export const tasksAtom = atom([]);
+export const tasksAtom = atom<ITaskDataBase[]>([]);
 export const typesWork = atom<ITypeWork[]>([]);
 
 export const placesLMK = atom<IPlaceLMK[]>([]);
@@ -39,8 +40,8 @@ export const Mounth = createContext<MounthState | null>(null);
 export const YearAtom = atom<number>(new Date().getFullYear());
 export const userAtom = atom(UserInterface);
 export const applications = atom<IApplication[]>([]);
-export const organizations = atom<OrganizationType[]>([]);
-export const users = atom<User[]>([]);
+export const organizations = atom<IOrganization[]>([]);
+export const users = atom<IUser[]>([]);
 export const logInAtom = atom<boolean>(false);
 export const scheduleController = new AbortController();
 export const queryClient = new QueryClient({
@@ -54,9 +55,9 @@ export const queryClient = new QueryClient({
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useAtom(logInAtom);
   const [, setOrganizationsDataBase] =
-    useAtom<OrganizationType[]>(organizations);
+    useAtom<IOrganization[]>(organizations);
   const [, setTypesWork] = useAtom<ITypeWork[]>(typesWork);
-  const [, setUsersDataBase] = useAtom<User[]>(users);
+  const [, setUsersDataBase] = useAtom<IUser[]>(users);
   const [, setPlaces] = useAtom(placesLMK);
   const [, setUserInfo] = useAtom(userAtom);
   const navigate = useNavigate();
@@ -78,12 +79,13 @@ export default function App() {
     }
   };
 
+
   useEffect(() => {
-    isAuth();
     isLoggedIn ? navigate("/user_page") : navigate("/sign_in");
   }, [isLoggedIn]);
 
   useEffect(() => {
+    isAuth();
     apiForOrhanization
       .getOrgs()
       .then((response) => {
@@ -110,8 +112,7 @@ export default function App() {
       .get()
       .then((res) => setPlaces(res.data))
       .catch((err) => console.error(err));
-    apiApplications.get();
-    apiTypesWorks.get().then((res) => setTypesWork(res.data[0]));
+    apiTypesWorks.get().then((res) => setTypesWork(res.data));
   }, []);
 
   return (
